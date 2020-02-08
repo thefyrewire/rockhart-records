@@ -1,23 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import Button from '@material-ui/core/Button';
+
+const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        {/* <Button variant="contained" color="primary" href={`https://id.twitch.tv/oauth2/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${encodeURIComponent('http://localhost:3001/auth/callback')}&response_type=code&force_verify=true`}>Login</Button> */}
+        <Button variant="contained" color="primary" href={'http://localhost:3001/auth'}>Login</Button>
       </header>
     </div>
   );
