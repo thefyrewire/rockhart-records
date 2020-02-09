@@ -1,6 +1,6 @@
 import React from 'react';
 import Styled from 'styled-components';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import Home from './components/Home';
 import Requests from './components/Requests';
@@ -8,7 +8,16 @@ import Dashboard from './components/Dashboard';
 
 import { Button, Container, Menu } from 'semantic-ui-react';
 
-const LoginButton = Styled(Button)({
+import { connect } from 'react-redux';
+
+const mapStateToProps = ({ auth }) => {
+  return {
+    authenticated: auth.authenticated,
+    user: auth.user
+  };
+}
+
+const ButtonDark = Styled(Button)({
   backgroundColor: '#3d3d3d !important',
   color: '#ddd !important',
   '&:hover': {
@@ -16,7 +25,7 @@ const LoginButton = Styled(Button)({
   }
 });
 
-const App = () => {
+const App = ({ authenticated, user }) => {
   return (
     <Router>
       <Menu style={{ backgroundColor: '#1d1d1d' }}>
@@ -27,21 +36,32 @@ const App = () => {
           <Menu.Item>
             <Link to="/requests" style={{ color: '#ddd' }}>Requests</Link>
           </Menu.Item>
+
+          {/* Dashboard link can only be seen by admins */}
+          { (user && user.level === 'admin') ?
           <Menu.Item>
             <Link to="/dashboard" style={{ color: '#ddd' }}>Dashboard</Link>
-          </Menu.Item>
+          </Menu.Item> : ''}
+
+          {/* Conditionally render the login/logout buttons depending on login status */}
           <Menu.Item position='right'>
-            <LoginButton href="http://localhost:5000/auth">Login</LoginButton>
+            { authenticated ? <ButtonDark>Logout</ButtonDark> : <ButtonDark href="http://localhost:5000/auth/login">Login</ButtonDark> }
           </Menu.Item>
         </Container>
       </Menu>
       <Switch>
         <Route exact path="/" component={Home}></Route>
         <Route path="/requests" component={Requests}></Route>
-        <Route path="/dashboard" component={Dashboard}></Route>
+        <PrivateRoute path="/dashboard" component={Dashboard} user={user}></PrivateRoute>
       </Switch>
     </Router>
   );
 }
 
-export default App;
+const PrivateRoute = ({ component: Component, user, ...props }) => (
+  <Route {...props} render={(props) => (
+    (user && user.level === 'admin') ? <Component {...props} /> : <Redirect to="/" />
+  )} />
+)
+
+export default connect(mapStateToProps)(App);
