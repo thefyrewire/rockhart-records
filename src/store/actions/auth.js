@@ -1,15 +1,31 @@
-import { LOGIN_STATUS } from "../types/auth";
+import ky from 'ky';
+import { LOGIN_SUCCESS, LOGIN_FAILURE } from "../types/auth";
 
-export const setLoginStatus = (status) => {
+export const setLoginSuccess = (status) => {
   return {
-    type: LOGIN_STATUS,
+    type: LOGIN_SUCCESS,
     status
   }
 }
 
+export const setLoginFailure = () => {
+  return {
+    type: LOGIN_FAILURE,
+    status: {
+      authenticated: false,
+      user: null
+    }
+  }
+}
+
 export const checkLoginStatus = () => async (dispatch, getState) => {
-  return fetch('/auth/me').then(d => d.json()).then(res => {
-    console.log(res);
-    dispatch(setLoginStatus(res));
-  });
+  try {
+    const response = await ky('/auth/me').json();
+    console.log(response);
+    dispatch(setLoginSuccess(response));
+
+  } catch (err) {
+    console.warn(err);
+    dispatch(setLoginFailure());
+  }
 }
