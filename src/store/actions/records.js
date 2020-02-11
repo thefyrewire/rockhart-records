@@ -8,11 +8,24 @@ export const setRecords = (records) => {
   }
 }
 
-export const getRecords = () => async (dispatch) => {
+// export const getRecords = () => async (dispatch) => {
+//   try {
+//     const response = await ky.get('/api/records').json();
+//     dispatch(setRecords(response.records));
+//     return;
+
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
+export const getRecords = () => (dispatch) => {
   try {
-    const response = await ky.get('/api/records').json();
-    dispatch(setRecords(response.records));
-    return;
+    return new Promise(async (res, rej) => {
+      const response = await ky.get('/api/records').json();
+      dispatch(setRecords(response.records));
+      res();
+    });
 
   } catch (error) {
     console.log(error.message);
