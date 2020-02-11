@@ -1,5 +1,5 @@
-import React, { useEffect, useReducer } from 'react';
-import { Grid, Pagination, Card, Image, Segment, Button } from 'semantic-ui-react';
+import React, { useEffect, useReducer, useState } from 'react';
+import { Grid, Pagination, Card, Image, Segment, Button, Responsive } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { getRecords } from '../store/actions/records';
 
@@ -17,6 +17,7 @@ const Records = ({ record: { records }, getRecords }) => {
   }
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [columns, setColumns] = useState(4);
 
   useEffect(() => {
     (async () => {
@@ -37,15 +38,22 @@ const Records = ({ record: { records }, getRecords }) => {
     return items % size === 0 ? items / size : Math.floor(items / size) + 1;
   }
 
+  const handleResizeUpdate = () => {
+    if (window.innerWidth <= 380) setColumns(1);
+    else if (window.innerWidth <= 500) setColumns(2);
+    else if (window.innerWidth <= 750) setColumns(3);
+    else setColumns(4);
+  }
+
   return (
     <div>
       <h1>Records Catalog</h1>
       <Segment>
-        <Grid columns={4}>
-          <Grid.Row>
+        <Responsive as={Grid} columns={columns} onUpdate={handleResizeUpdate} fireOnMount celled="internally">
+          <Grid.Row stretched>
             {state.renderedRecords.map(record => (
-              <Grid.Column key={record.id}>
-                <Card>
+              <Grid.Column key={record.id} style={{ boxShadow: 'none' }}>
+                <Card centered>
                   <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false}></Image>
                   <Card.Content>
                     <Card.Header>{record.name}</Card.Header>
@@ -58,7 +66,7 @@ const Records = ({ record: { records }, getRecords }) => {
               </Grid.Column>
             ))}
           </Grid.Row>
-        </Grid>
+        </Responsive>
       </Segment>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Pagination defaultActivePage={1} totalPages={getPageCount(records.length, renderable)} onPageChange={(event, data) => onPageChange(data)}/>
