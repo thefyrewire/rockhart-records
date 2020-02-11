@@ -5,10 +5,12 @@
 */
 
 import React from 'react';
+import Records from './Records';
 
 const Home = () => {
   return (
-    <h2>Records</h2>
+    // <h2>Records</h2>
+    <Records/>
   )
 }
 
