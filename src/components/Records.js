@@ -1,16 +1,28 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { Grid, Pagination, Card, Image, Segment, Button, Responsive } from 'semantic-ui-react';
+import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { getRecords } from '../store/actions/records';
 
 const Records = ({ record: { records }, getRecords }) => {
   const renderable = 4;
-  const initialState = { renderedRecords: [] };
+  const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [] };
 
   const reducer = (state, action) => {
     switch (action.type) {
+      case 'UPDATE_SEARCH':
+        return { ...state, search: action.search };
       case 'UPDATE_PAGE':
-        return { renderedRecords: records.slice((action.amount*renderable)-renderable, action.amount*renderable) };
+        return { ...state, page: action.page };
+      case 'UPDATE_RENDERABLE':
+        return {
+          ...state,
+          renderableRecords: records.filter(record => record.name.toLowerCase().includes(state.search.toLowerCase()) || record.artist.toLowerCase().includes(state.search.toLowerCase()))
+        }
+      case 'UPDATE_RENDERED':
+        return {
+          ...state,
+          renderedRecords: state.renderableRecords.slice((state.page*renderable)-renderable, state.page*renderable)
+        };
       default:
         return state;
     }
@@ -18,19 +30,22 @@ const Records = ({ record: { records }, getRecords }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const [columns, setColumns] = useState(4);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     (async () => {
       console.log('Fetching records!');
       await getRecords();
-      dispatch({ type: 'UPDATE_PAGE', amount: 1 });
+      dispatch({ type: 'UPDATE_RENDERABLE' });
+      dispatch({ type: 'UPDATE_RENDERED' });
     })();
 
   }, [getRecords]); // <--- values to watch (when values in getRecords change, component re-renders)
 
-  const onPageChange = (event) => {
-    console.log(event);
-    dispatch({ type: 'UPDATE_PAGE', amount: event.activePage });
+  const handlePageChange = async (event) => {
+    setPage(event.activePage);
+    dispatch({ type: 'UPDATE_PAGE', page: event.activePage });
+    dispatch({ type: 'UPDATE_RENDERED' });
   }
 
   const getPageCount = (items, size) => {
@@ -45,9 +60,20 @@ const Records = ({ record: { records }, getRecords }) => {
     else setColumns(4);
   }
 
+  const handleSearch = (event) => {
+    setPage(1);
+    dispatch({ type: 'UPDATE_PAGE', page: 1 });
+    dispatch({ type: 'UPDATE_SEARCH', search: event.value });
+    dispatch({ type: 'UPDATE_RENDERABLE' });
+    dispatch({ type: 'UPDATE_RENDERED' });
+  }
+
   return (
     <div>
-      <h1>Records Catalog</h1>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: window.innerWidth <= 550 ? 'column' : 'row' }}>
+        <h1>Records Catalog</h1>
+        <Input icon="search" iconPosition="left" placeholder="Search..." onChange={(event, data) => handleSearch(data)}></Input>
+      </div>
       <Segment>
         <Responsive as={Grid} columns={columns} onUpdate={handleResizeUpdate} fireOnMount celled="internally">
           <Grid.Row stretched>
@@ -69,7 +95,7 @@ const Records = ({ record: { records }, getRecords }) => {
         </Responsive>
       </Segment>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <Pagination defaultActivePage={1} totalPages={getPageCount(records.length, renderable)} onPageChange={(event, data) => onPageChange(data)}/>
+        <Pagination activePage={page} totalPages={getPageCount(state.renderableRecords.length, renderable)} onPageChange={(event, data) => handlePageChange(data)}/>
       </div>
     </div>
   )
