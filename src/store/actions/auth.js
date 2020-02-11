@@ -1,5 +1,5 @@
 import ky from 'ky';
-import { LOGIN_SUCCESS, LOGIN_FAILURE, USER_LOGOUT } from "../types/auth";
+import { LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE } from "../types/auth";
 
 export const setLoginSuccess = (status) => {
   return {
@@ -18,9 +18,19 @@ export const setLoginFailure = () => {
   }
 }
 
-export const userLoggedOut = () => {
+export const setLogoutSuccess = () => {
   return {
-    type: USER_LOGOUT,
+    type: LOGOUT_SUCCESS,
+    status: {
+      authenticated: false,
+      user: null
+    }
+  }
+}
+
+export const setLogoutFailure = () => {
+  return {
+    type: LOGOUT_FAILURE,
     status: {
       authenticated: false,
       user: null
@@ -30,7 +40,7 @@ export const userLoggedOut = () => {
 
 export const checkLoginStatus = () => async (dispatch) => {
   try {
-    const response = await ky('/auth/me', { headers: { credentials: 'include' }}).json();
+    const response = await ky('/api/users/me', { headers: { credentials: 'include' }}).json();
     console.log(response);
     dispatch(setLoginSuccess(response));
 
@@ -43,10 +53,10 @@ export const checkLoginStatus = () => async (dispatch) => {
 export const userLogout = () => async (dispatch) => {
   try {
     await ky('/auth/logout').json();
-    dispatch(userLoggedOut());
+    dispatch(setLogoutSuccess());
 
   } catch (err) {
     console.warn(err);
-    dispatch(userLoggedOut());
+    dispatch(setLogoutFailure());
   }
 }

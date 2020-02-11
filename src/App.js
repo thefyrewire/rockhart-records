@@ -28,7 +28,7 @@ const ButtonDark = Styled(Button)({
 const App = ({ authenticated, user }) => {
   return (
     <Router>
-      <Menu style={{ backgroundColor: '#1d1d1d' }}>
+      <Menu style={{ backgroundColor: '#1d1d1d', borderRadius: '0' }}>
         <Container>
           <Menu.Item>
             <Link to="/" style={{ color: '#ddd' }}>Home</Link>
