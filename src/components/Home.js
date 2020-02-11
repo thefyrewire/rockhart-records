@@ -10,7 +10,9 @@ import Records from './Records';
 const Home = () => {
   return (
     // <h2>Records</h2>
-    <Records/>
+    <div style={{ padding: 20 }}>
+      <Records/>
+    </div>
   )
 }
 

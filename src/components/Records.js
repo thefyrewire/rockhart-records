@@ -1,10 +1,10 @@
 import React, { useEffect, useReducer } from 'react';
-import { Grid, Pagination } from 'semantic-ui-react';
+import { Grid, Pagination, Card, Image, Segment, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { getRecords } from '../store/actions/records';
 
 const Records = ({ record: { records }, getRecords }) => {
-  const renderable = 3;
+  const renderable = 4;
   const initialState = { renderedRecords: [] };
 
   const reducer = (state, action) => {
@@ -39,16 +39,29 @@ const Records = ({ record: { records }, getRecords }) => {
 
   return (
     <div>
-      <h2>Records</h2>
-      <div>
-        <Pagination defaultActivePage={1} totalPages={getPageCount(records.length, renderable)} onPageChange={(event, data) => onPageChange(data)}/>
-        <Grid columns={4} divided>
+      <h1>Records Catalog</h1>
+      <Segment>
+        <Grid columns={4}>
           <Grid.Row>
             {state.renderedRecords.map(record => (
-              <Grid.Column key={record.id}>{record.name}</Grid.Column>
+              <Grid.Column key={record.id}>
+                <Card>
+                  <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false}></Image>
+                  <Card.Content>
+                    <Card.Header>{record.name}</Card.Header>
+                    <Card.Description>{record.artist}</Card.Description>
+                  </Card.Content>
+                  <Card.Content extra style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</Button>
+                  </Card.Content>
+                </Card>
+              </Grid.Column>
             ))}
           </Grid.Row>
         </Grid>
+      </Segment>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Pagination defaultActivePage={1} totalPages={getPageCount(records.length, renderable)} onPageChange={(event, data) => onPageChange(data)}/>
       </div>
     </div>
   )
