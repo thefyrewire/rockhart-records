@@ -88,8 +88,8 @@ const Records = ({ record: { records }, getRecords }) => {
                       <Card.Header>{record.name}</Card.Header>
                       <Card.Description>{record.artist}</Card.Description>
                     </Card.Content>
-                    <Card.Content extra style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      <Button style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</Button>
+                    <Card.Content extra>
+                      <Button floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</Button>
                     </Card.Content>
                   </Card>
                 </Grid.Column>
