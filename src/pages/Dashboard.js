@@ -4,10 +4,24 @@
 */
 
 import React from 'react';
+import { Grid } from 'semantic-ui-react';
+import AddRecordForm from '../components/AddRecordForm';
 
 const Dashboard = () => {
   return (
-    <h2>Dashboard</h2>
+    <div style={{ padding: 20 }}>
+      <h1>Dashboard</h1>
+      <Grid>
+        <Grid.Row columns={2}>
+          <Grid.Column>
+            <AddRecordForm/>
+          </Grid.Column>
+          <Grid.Column>
+            {/* <AddRecordForm/> */}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </div>
   )
 }
 
