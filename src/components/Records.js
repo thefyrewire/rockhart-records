@@ -16,7 +16,9 @@ const Records = ({ record: { records }, getRecords }) => {
       case 'UPDATE_RENDERABLE':
         return {
           ...state,
-          renderableRecords: records.filter(record => record.name.toLowerCase().includes(state.search.toLowerCase()) || record.artist.toLowerCase().includes(state.search.toLowerCase()))
+          renderableRecords: records
+            .filter(record => record.name.toLowerCase().includes(state.search.toLowerCase()) || record.artist.toLowerCase().includes(state.search.toLowerCase()))
+            .sort((a, b) => a.name > b.name)
         }
       case 'UPDATE_RENDERED':
         return {
@@ -77,20 +79,26 @@ const Records = ({ record: { records }, getRecords }) => {
       <Segment>
         <Responsive as={Grid} columns={columns} onUpdate={handleResizeUpdate} fireOnMount celled="internally">
           <Grid.Row stretched>
-            {state.renderedRecords.map(record => (
-              <Grid.Column key={record.id} style={{ boxShadow: 'none' }}>
-                <Card centered>
-                  <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false}></Image>
-                  <Card.Content>
-                    <Card.Header>{record.name}</Card.Header>
-                    <Card.Description>{record.artist}</Card.Description>
-                  </Card.Content>
-                  <Card.Content extra style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</Button>
-                  </Card.Content>
-                </Card>
-              </Grid.Column>
-            ))}
+            {state.renderableRecords.length > 0 ? (
+              state.renderedRecords.map(record => (
+                <Grid.Column key={record.id} style={{ boxShadow: 'none' }}>
+                  <Card centered>
+                    <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false}></Image>
+                    <Card.Content>
+                      <Card.Header>{record.name}</Card.Header>
+                      <Card.Description>{record.artist}</Card.Description>
+                    </Card.Content>
+                    <Card.Content extra style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <Button style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</Button>
+                    </Card.Content>
+                  </Card>
+                </Grid.Column>
+              ))
+            ) : (
+              <div style={{ width: '100%', height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <h3>No records found...</h3>
+              </div>
+            )}
           </Grid.Row>
         </Responsive>
       </Segment>
