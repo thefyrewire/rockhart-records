@@ -1,9 +1,8 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { getRecords } from '../store/actions/records';
 
-const Records = ({ record: { records }, getRecords }) => {
+const Records = ({ record: { records } }) => {
   const renderable = 4;
   const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [] };
 
@@ -35,14 +34,9 @@ const Records = ({ record: { records }, getRecords }) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    (async () => {
-      console.log('Fetching records!');
-      await getRecords();
-      dispatch({ type: 'UPDATE_RENDERABLE' });
-      dispatch({ type: 'UPDATE_RENDERED' });
-    })();
-
-  }, [getRecords]); // <--- values to watch (when values in getRecords change, component re-renders)
+    dispatch({ type: 'UPDATE_RENDERABLE' });
+    dispatch({ type: 'UPDATE_RENDERED' });
+  }, [records]); // <--- values to watch (when records change, component re-renders)
 
   const handlePageChange = async (event) => {
     setPage(event.activePage);
@@ -113,4 +107,4 @@ const mapStateToProps = (state) => ({
   record: state.records
 });
 
-export default connect(mapStateToProps, { getRecords })(Records);
+export default connect(mapStateToProps)(Records);

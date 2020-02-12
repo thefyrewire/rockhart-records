@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom';
 
@@ -9,6 +9,8 @@ import Dashboard from './pages/Dashboard';
 import { Button, Container, Menu } from 'semantic-ui-react';
 
 import { connect } from 'react-redux';
+
+import { getRecords } from './store/actions/records';
 
 const mapStateToProps = ({ auth }) => {
   return {
@@ -25,7 +27,15 @@ const ButtonDark = Styled(Button)({
   }
 });
 
-const App = ({ authenticated, user }) => {
+const App = ({ authenticated, user, getRecords }) => {
+
+  useEffect(() => {
+    (async () => {
+      console.log('Fetching records!');
+      await getRecords();
+    })();
+  }, [getRecords]);
+
   return (
     <Router>
       <Menu style={{ backgroundColor: '#1d1d1d', borderRadius: '0' }}>
@@ -50,9 +60,9 @@ const App = ({ authenticated, user }) => {
         </Container>
       </Menu>
       <Switch>
-        <Route exact path="/" component={Home}></Route>
-        <Route path="/requests" component={Requests}></Route>
-        <PrivateRoute path="/dashboard" component={Dashboard} user={user}></PrivateRoute>
+        <Route exact path="/" render={() => <Home/>}></Route>
+        <Route exact path="/requests" render={() => <Requests/>}></Route>
+        <PrivateRoute exact path="/dashboard" component={Dashboard} user={user}></PrivateRoute>
       </Switch>
     </Router>
   );
@@ -64,4 +74,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, { getRecords })(App);
