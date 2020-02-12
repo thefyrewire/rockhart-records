@@ -2,9 +2,9 @@ import React from 'react';
 import Styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom';
 
-import Home from './components/Home';
-import Requests from './components/Requests';
-import Dashboard from './components/Dashboard';
+import Home from './pages/Home';
+import Requests from './pages/Requests';
+import Dashboard from './pages/Dashboard';
 
 import { Button, Container, Menu } from 'semantic-ui-react';
 
