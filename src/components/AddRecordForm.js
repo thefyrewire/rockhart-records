@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Form, Segment } from 'semantic-ui-react';
 
 import { createRecord } from '../store/actions/records';
 
-const AddRecordForm = ({ createRecord }) => {
+const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit }) => {
   const [name, setName] = useState({ value: '', error: false });
   const [artist, setArtist] = useState({ value: '', error: false });
   const [albumArt, setAlbumArt] = useState({ value: '', error: false });
   const [spotifyURL, setSpotifyURL] = useState({ value: '', error: false });
   const [purchaseURL, setPurchaseURL] = useState({ value: '', error: false });
+
+  useEffect(() => {
+    if (isEditing && recordToEdit.id) {
+      const setToEdit = [recordToEdit.name, recordToEdit.artist, recordToEdit.album_art, recordToEdit.spotify_url, recordToEdit.purchase_url];
+      [setName, setArtist, setAlbumArt, setSpotifyURL, setPurchaseURL].forEach((func, i) => {
+        func({ value: setToEdit[i] || '', error: false });
+      });
+    }
+  }, [isEditing, recordToEdit]);
+
 
   const handleChange = (data) => {
     switch (data.field) {
@@ -45,7 +55,8 @@ const AddRecordForm = ({ createRecord }) => {
     };
     
     try {
-      await createRecord(record);
+      if (!isEditing) await createRecord(record);
+      else handleEditSave(record);
 
     } catch (error) {
       console.log(error);
@@ -104,7 +115,7 @@ const AddRecordForm = ({ createRecord }) => {
 
   return (
     <div>
-      <h2>Add new record</h2>
+      <h2>{!isEditing ? 'Add new' : 'Editing'} record</h2>
         <Segment>
           <Form>
             <Form.Input label="Name" placeholder="Record name" required onChange={(event, { value }) => handleChange({ field: 'NAME', value })} value={name.value} error={name.error} />
@@ -112,8 +123,13 @@ const AddRecordForm = ({ createRecord }) => {
             <Form.Input label="Album Art" placeholder="URL or browse" required onChange={(event, { value }) => handleChange({ field: 'ALBUM_ART', value })} value={albumArt.value} error={albumArt.error} action={{ icon: 'folder open', content: 'Browse...', onClick: (event) => handleBrowse(event) }} />
             <Form.Input label="Spotify URL" placeholder="Link to Spotify" onChange={(event, { value }) => handleChange({ field: 'SPOTIFY_URL', value })} value={spotifyURL.value} error={spotifyURL.error} />
             <Form.Input label="Purchase URL" placeholder="Link to store" onChange={(event, { value }) => handleChange({ field: 'PURCHASE_URL', value })} value={purchaseURL.value} error={purchaseURL.error} />
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Form.Button onClick={ (event) => handleSubmit(event) }>Submit</Form.Button>
+            <div style={{ display: 'flex'}}>
+              {isEditing ? (<div style={{ display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
+                <Form.Button onClick={ (event) => handleSubmit(event) } negative>Delete</Form.Button>
+              </div>) : ''}
+              <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
+                <Form.Button onClick={ (event) => handleSubmit(event) }>{!isEditing ? 'Submit' : 'Save'}</Form.Button>
+              </div>
             </div>
           </Form>
         </Segment>

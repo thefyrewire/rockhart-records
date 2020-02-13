@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Segment, List, Image, Button } from 'semantic-ui-react';
 
+import EditRecordModal from './EditRecordModal';
+
 const RecordsList = ({ record: { records }}) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [recordID, setRecordID] = useState('');
+
+  const handleClickEdit = (id) => {
+    if (modalOpen) return;
+    setModalOpen(true);
+    setRecordID(id);
+  }
+
   return (
     <div>
       <h2>Records</h2>
@@ -18,11 +29,12 @@ const RecordsList = ({ record: { records }}) => {
                 </List.Content>
               </div>
               <div style={{ float: 'right', paddingRight: 10, display: 'flex', height: 50, justifyContent: 'flex-end', alignItems: 'center' }} >
-                <Button icon="edit"/>
+                <Button icon="edit" onClick={() => handleClickEdit(record.id)} />
               </div>
             </List.Item>
           ))}
         </List>
+        <EditRecordModal modalOpen={modalOpen} recordID={recordID} />
       </Segment>
     </div>
   )
