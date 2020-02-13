@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Form, Segment } from 'semantic-ui-react';
 
-const AddRecordForm = () => {
+import { createRecord } from '../store/actions/records';
+
+const AddRecordForm = ({ createRecord }) => {
   const [name, setName] = useState({ value: '', error: false });
   const [artist, setArtist] = useState({ value: '', error: false });
   const [albumArt, setAlbumArt] = useState({ value: '', error: false });
@@ -23,7 +26,7 @@ const AddRecordForm = () => {
     }
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     // 1. validate
     // 2. dispatch redux action
     // 3. POST to server / database
@@ -33,7 +36,20 @@ const AddRecordForm = () => {
     event.preventDefault();
     if (!validateForm()) return;
 
-    alert('Submitted!');
+    const record = {
+      name: name.value,
+      artist: artist.value,
+      album_art: albumArt.value,
+      spotify_url: spotifyURL.value.length > 0 ? spotifyURL.value : null,
+      purchase_url: purchaseURL.value.length > 0 ? purchaseURL.value : null
+    };
+    
+    try {
+      await createRecord(record);
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const validateForm = () => {
@@ -105,4 +121,9 @@ const AddRecordForm = () => {
   )
 }
 
-export default AddRecordForm;
+const mapStateToProps = (state) => ({
+  // record: state.records
+  ...state
+});
+
+export default connect(mapStateToProps, { createRecord })(AddRecordForm);
