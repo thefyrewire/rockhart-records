@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Modal } from 'semantic-ui-react';
+import { Modal, TransitionablePortal } from 'semantic-ui-react';
 
 import AddRecordForm from './AddRecordForm';
 import { editRecord } from '../store/actions/records';
 
-const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord, onEditRecord }) => {
+const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord, closeModal }) => {
   const [recordToEdit, setRecordToEdit] = useState({});
 
   useEffect(() => {
@@ -15,15 +15,38 @@ const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord,
 
   const handleEditSave = async (record) => {
     await editRecord(recordID, record);
-    onEditRecord();
+    transitionModalOut();
+  }
+
+  const transitionModalIn = () => {
+    document.body.classList.add('modal-fade-in');
+  }
+
+  const transitionModalOut = () => {
+    document.body.classList.remove('modal-fade-in');
+    closeModal();
   }
 
   return (
-    <Modal open={modalOpen} size="tiny">
-      <Modal.Content scrolling>
-        <AddRecordForm isEditing={true} recordToEdit={recordToEdit} handleEditSave={handleEditSave} />
-      </Modal.Content>
-    </Modal>
+    <>
+      <style>{`
+        .ui.dimmer {
+          transition: background-color 0.5s ease;
+          background-color: transparent;
+        }
+
+        .modal-fade-in .ui.dimmer {
+          background-color: rgba(0,0,0,.85);
+        }
+      `}</style>
+      <TransitionablePortal open={modalOpen} transition={{ animation: 'fade down', duration: 500 }} onOpen={transitionModalIn}>
+        <Modal open={true} size="tiny" onClose={transitionModalOut}>
+          <Modal.Content scrolling>
+            <AddRecordForm isEditing={true} recordToEdit={recordToEdit} handleEditSave={handleEditSave} />
+          </Modal.Content>
+        </Modal>
+      </TransitionablePortal>
+    </>
   )
 }
 
