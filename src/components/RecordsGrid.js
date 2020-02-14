@@ -1,6 +1,33 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input } from 'semantic-ui-react';
+import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import Styled from 'styled-components';
+
+const RequestButton = Styled(Button)({
+  backgroundColor: '#d70000 !important',
+  color: '#fff !important',
+  '&:hover': {
+    backgroundColor: '#a50000 !important'
+  }
+});
+
+const SpotifyButton = Styled(Button)({
+  backgroundColor: 'transparent !important',
+  color: '#1db954 !important',
+  '&:hover': {
+    backgroundColor: '#1db954 !important',
+    color: '#fff !important'
+  }
+});
+
+const PurchaseButton = Styled(Button)({
+  backgroundColor: 'transparent !important',
+  color: 'rgba(0,0,0,.8) !important',
+  '&:hover': {
+    backgroundColor: 'rgba(0,0,0,.8) !important',
+    color: '#cacbcd !important'
+  }
+});
 
 const Records = ({ record: { records } }) => {
   const renderable = 4;
@@ -83,7 +110,9 @@ const Records = ({ record: { records } }) => {
                       <Card.Description>{record.artist}</Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                      <Button floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</Button>
+                      {record.spotify_url ? (<SpotifyButton floated="left" href="https://google.com" target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
+                      {record.purchase_url ? (<PurchaseButton floated="left" href="https://google.com" target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
+                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</RequestButton>
                     </Card.Content>
                   </Card>
                 </Grid.Column>
