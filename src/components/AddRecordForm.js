@@ -1,41 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { connect } from 'react-redux';
 import { Form, Segment } from 'semantic-ui-react';
 
 import { createRecord } from '../store/actions/records';
 
 const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit, handleEditDelete }) => {
-  const [name, setName] = useState({ value: '', error: false });
-  const [artist, setArtist] = useState({ value: '', error: false });
-  const [albumArt, setAlbumArt] = useState({ value: '', error: false });
-  const [spotifyURL, setSpotifyURL] = useState({ value: '', error: false });
-  const [purchaseURL, setPurchaseURL] = useState({ value: '', error: false });
+  const initialState = {
+    name: { value: '', error: false },
+    artist: { value: '', error: false },
+    album_art: { value: '', error: false },
+    spotify_url: { value: '', error: false },
+    purchase_url: { value: '', error: false },
+  }
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'RESET':
+        return initialState;
+      case 'SET':
+        return Object.fromEntries(Object.keys(action.record).map(key => [key, { value: action.record[key] || '', error: false }]));
+      case 'VALUE': {
+        const newState = { ...state };
+        newState[action.field] = Object.assign(newState[action.field], { value: action.value, error: false });
+        return newState;
+      }
+      case 'ERROR': {
+        const newState = { ...state };
+        newState[action.field] = Object.assign(newState[action.field], { error: action.error });
+        return newState;
+      }
+      default:
+        return state;
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { name, artist, album_art, spotify_url, purchase_url } = state;
 
   useEffect(() => {
     if (isEditing && recordToEdit.id) {
-      const setToEdit = [recordToEdit.name, recordToEdit.artist, recordToEdit.album_art, recordToEdit.spotify_url, recordToEdit.purchase_url];
-      [setName, setArtist, setAlbumArt, setSpotifyURL, setPurchaseURL].forEach((func, i) => {
-        func({ value: setToEdit[i] || '', error: false });
-      });
+      dispatch({ type: 'SET', record: recordToEdit });
     }
   }, [isEditing, recordToEdit]);
 
-
-  const handleChange = (data) => {
-    switch (data.field) {
-      case 'NAME':
-        return setName({ value: data.value, error: false });
-      case 'ARTIST':
-        return setArtist({ value: data.value, error: false });
-      case 'ALBUM_ART':
-        return setAlbumArt({ value: data.value, error: false });
-      case 'SPOTIFY_URL':
-        return setSpotifyURL({ value: data.value, error: false });
-      case 'PURCHASE_URL':
-        return setPurchaseURL({ value: data.value, error: false });
-      default:
-        return;
-    }
+  const handleChange = (event) => {
+    const { name, value } = event;
+    dispatch({ type: 'VALUE', field: name, value });
   }
 
   const handleSubmit = async (event) => {
@@ -51,14 +61,17 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
     const record = {
       name: name.value,
       artist: artist.value,
-      album_art: albumArt.value,
-      spotify_url: spotifyURL.value.length > 0 ? spotifyURL.value : null,
-      purchase_url: purchaseURL.value.length > 0 ? purchaseURL.value : null
+      album_art: album_art.value,
+      spotify_url: spotify_url.value.length > 0 ? spotify_url.value : null,
+      purchase_url: purchase_url.value.length > 0 ? purchase_url.value : null
     };
     
     try {
-      if (!isEditing) await createRecord(record);
-      else handleEditSave(record);
+      if (!isEditing) {
+        await createRecord(record);
+        dispatch({ type: 'RESET' });
+
+      } else handleEditSave(record);
 
     } catch (error) {
       console.log(error);
@@ -69,32 +82,32 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
     let valid = true;
     
     if (name.value.trim().length <= 0) {
-      setName({ value: name.value, error: 'Required field' });
+      dispatch({ type: 'ERROR', field: 'name', error: 'Required field' });
       valid = false;
     }
 
     if (artist.value.trim().length <= 0) {
-      setArtist({ value: artist.value, error: 'Required field' });
+      dispatch({ type: 'ERROR', field: 'artist', error: 'Required field' });
       valid = false;
     }
 
-    if (!isValidURL(albumArt.value.trim())) {
-      setAlbumArt({ value: albumArt.value, error: 'Invalid URL' });
+    if (!isValidURL(album_art.value.trim())) {
+      dispatch({ type: 'ERROR', field: 'album_art', error: 'Invalid URL' });
       valid = false;
     }
 
-    if (albumArt.value.trim().length <= 0) {
-      setAlbumArt({ value: albumArt.value, error: 'Required field' });
+    if (album_art.value.trim().length <= 0) {
+      dispatch({ type: 'ERROR', field: 'album_art', error: 'Required field' });
       valid = false;
     }
 
-    if (spotifyURL.value.trim().length > 0 && !isValidURL(spotifyURL.value.trim())) {
-      setSpotifyURL({ value: spotifyURL.value, error: 'Invalid URL' });
+    if (spotify_url.value.trim().length > 0 && !isValidURL(spotify_url.value.trim())) {
+      dispatch({ type: 'ERROR', field: 'spotify_url', error: 'Invalid URL' });
       valid = false;
     }
 
-    if (purchaseURL.value.trim().length > 0 && !isValidURL(purchaseURL.value.trim())) {
-      setPurchaseURL({ value: purchaseURL.value, error: 'Invalid URL' });
+    if (purchase_url.value.trim().length > 0 && !isValidURL(purchase_url.value.trim())) {
+      dispatch({ type: 'ERROR', field: 'purchase_url', error: 'Invalid URL' });
       valid = false;
     }
 
@@ -126,11 +139,11 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
       <h2>{!isEditing ? 'Add new' : 'Editing'} record</h2>
         <Segment style={{ marginBottom: '1em' }}>
           <Form>
-            <Form.Input label="Name" placeholder="Record name" required onChange={(event, { value }) => handleChange({ field: 'NAME', value })} value={name.value} error={name.error} />
-            <Form.Input label="Artist" placeholder="Record artist(s)" required onChange={(event, { value }) => handleChange({ field: 'ARTIST', value })} value={artist.value} error={artist.error} />
-            <Form.Input label="Album Art" placeholder="URL or browse" required onChange={(event, { value }) => handleChange({ field: 'ALBUM_ART', value })} value={albumArt.value} error={albumArt.error} action={{ icon: 'folder open', content: 'Browse...', onClick: (event) => handleBrowse(event) }} />
-            <Form.Input label="Spotify URL" placeholder="Link to Spotify" onChange={(event, { value }) => handleChange({ field: 'SPOTIFY_URL', value })} value={spotifyURL.value} error={spotifyURL.error} />
-            <Form.Input label="Purchase URL" placeholder="Link to store" onChange={(event, { value }) => handleChange({ field: 'PURCHASE_URL', value })} value={purchaseURL.value} error={purchaseURL.error} />
+            <Form.Input label="Name" name="name" placeholder="Record name" required onChange={(event, data) => handleChange(data)} value={name.value} error={name.error} />
+            <Form.Input label="Artist" name="artist" placeholder="Record artist(s)" required onChange={(event, data) => handleChange(data)} value={artist.value} error={artist.error} />
+            <Form.Input label="Album Art" name="album_art" placeholder="URL or browse" required onChange={(event, data) => handleChange(data)} value={album_art.value} error={album_art.error} action={{ icon: 'folder open', content: 'Browse...', onClick: (event) => handleBrowse(event) }} />
+            <Form.Input label="Spotify URL" name="spotify_url" placeholder="Link to Spotify" onChange={(event, data) => handleChange(data)} value={spotify_url.value} error={spotify_url.error} />
+            <Form.Input label="Purchase URL" name="purchase_url" placeholder="Link to store" onChange={(event, data) => handleChange(data)} value={purchase_url.value} error={purchase_url.error} />
             <div style={{ display: 'flex'}}>
               {isEditing ? (<div style={{ display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
                 <Form.Button onClick={ (event) => handleDelete(event) } negative>Delete</Form.Button>
