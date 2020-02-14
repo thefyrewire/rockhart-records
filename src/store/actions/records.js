@@ -1,4 +1,4 @@
-import { SET_RECORDS, ADD_RECORD } from '../types/records';
+import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD } from '../types/records';
 import ky from 'ky';
 
 export const setRecords = (records) => {
@@ -11,6 +11,14 @@ export const setRecords = (records) => {
 export const addRecord = (record) => {
   return {
     type: ADD_RECORD,
+    record
+  }
+}
+
+export const updateRecord = (id, record) => {
+  return {
+    type: UPDATE_RECORD,
+    id,
     record
   }
 }
@@ -41,4 +49,19 @@ export const createRecord = (record) => (dispatch) => {
       rej(error.message);
     }
   });
+}
+
+export const editRecord = (id, record) => (dispatch) => {
+  console.log(id);
+  return new Promise(async (res, rej) => {
+    try {
+      const response = await ky.put(`/api/records/${id}`,  { json: record }).json();
+      dispatch(updateRecord(response.record.id, response.record));
+      res();
+
+    } catch (error) {
+      console.log(error.message);
+      rej(error.message);
+    }
+  })
 }

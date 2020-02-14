@@ -14,6 +14,10 @@ const RecordsList = ({ record: { records }}) => {
     setRecordID(id);
   }
 
+  const onEditRecord = () => {
+    setModalOpen(false);
+  }
+
   return (
     <div>
       <h2>Records</h2>
@@ -34,7 +38,7 @@ const RecordsList = ({ record: { records }}) => {
             </List.Item>
           ))}
         </List>
-        <EditRecordModal modalOpen={modalOpen} recordID={recordID} />
+        <EditRecordModal modalOpen={modalOpen} recordID={recordID} onEditRecord={onEditRecord} />
       </Segment>
     </div>
   )

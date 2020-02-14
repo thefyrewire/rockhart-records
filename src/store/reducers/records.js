@@ -1,4 +1,4 @@
-import { SET_RECORDS, ADD_RECORD } from '../types/records';
+import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD } from '../types/records';
 
 const initialState = {
   records: []
@@ -15,6 +15,11 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         records: [...state.records, action.record]
+      }
+    case UPDATE_RECORD:
+      return {
+        ...state,
+        records: state.records.map(record => record = (record.id === action.id) ? action.record : record)
       }
     default:
       return state;
