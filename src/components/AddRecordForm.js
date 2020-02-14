@@ -4,7 +4,7 @@ import { Form, Segment } from 'semantic-ui-react';
 
 import { createRecord } from '../store/actions/records';
 
-const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit }) => {
+const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit, handleEditDelete }) => {
   const [name, setName] = useState({ value: '', error: false });
   const [artist, setArtist] = useState({ value: '', error: false });
   const [albumArt, setAlbumArt] = useState({ value: '', error: false });
@@ -115,6 +115,12 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
     console.log('click!');
   }
 
+  const handleDelete = (event) => {
+    event.preventDefault();
+    if (!isEditing || !recordToEdit.id) return;
+    handleEditDelete();
+  }
+
   return (
     <div>
       <h2>{!isEditing ? 'Add new' : 'Editing'} record</h2>
@@ -127,7 +133,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
             <Form.Input label="Purchase URL" placeholder="Link to store" onChange={(event, { value }) => handleChange({ field: 'PURCHASE_URL', value })} value={purchaseURL.value} error={purchaseURL.error} />
             <div style={{ display: 'flex'}}>
               {isEditing ? (<div style={{ display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
-                <Form.Button onClick={ (event) => handleSubmit(event) } negative>Delete</Form.Button>
+                <Form.Button onClick={ (event) => handleDelete(event) } negative>Delete</Form.Button>
               </div>) : ''}
               <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
                 <Form.Button onClick={ (event) => handleSubmit(event) }>{!isEditing ? 'Submit' : 'Save'}</Form.Button>

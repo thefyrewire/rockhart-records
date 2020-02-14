@@ -1,4 +1,4 @@
-import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD } from '../types/records';
+import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD, REMOVE_RECORD } from '../types/records';
 import ky from 'ky';
 
 export const setRecords = (records) => {
@@ -20,6 +20,13 @@ export const updateRecord = (id, record) => {
     type: UPDATE_RECORD,
     id,
     record
+  }
+}
+
+export const removeRecord = (id) => {
+  return {
+    type: REMOVE_RECORD,
+    id
   }
 }
 
@@ -52,13 +59,26 @@ export const createRecord = (record) => (dispatch) => {
 }
 
 export const editRecord = (id, record) => (dispatch) => {
-  console.log(id);
   return new Promise(async (res, rej) => {
     try {
       const response = await ky.put(`/api/records/${id}`,  { json: record }).json();
       dispatch(updateRecord(response.record.id, response.record));
       res();
 
+    } catch (error) {
+      console.log(error.message);
+      rej(error.message);
+    }
+  })
+}
+
+export const deleteRecord = (id) => (dispatch) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const response = await ky.delete(`/api/records/${id}`).json();
+      dispatch(removeRecord(response.record.id));
+      res();
+      
     } catch (error) {
       console.log(error.message);
       rej(error.message);

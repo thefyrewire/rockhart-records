@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Modal, TransitionablePortal } from 'semantic-ui-react';
 
 import AddRecordForm from './AddRecordForm';
-import { editRecord } from '../store/actions/records';
+import { editRecord, deleteRecord } from '../store/actions/records';
 
-const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord, closeModal }) => {
+const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord, closeModal, deleteRecord }) => {
   const [recordToEdit, setRecordToEdit] = useState({});
 
   useEffect(() => {
@@ -27,6 +27,11 @@ const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord,
     closeModal();
   }
 
+  const handleEditDelete = async () => {
+    await deleteRecord(recordID);
+    transitionModalOut();
+  }
+
   return (
     <>
       <style>{`
@@ -42,7 +47,7 @@ const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord,
       <TransitionablePortal open={modalOpen} transition={{ animation: 'fade down', duration: 500 }} onOpen={transitionModalIn}>
         <Modal open={true} size="tiny" onClose={transitionModalOut}>
           <Modal.Content scrolling>
-            <AddRecordForm isEditing={true} recordToEdit={recordToEdit} handleEditSave={handleEditSave} />
+            <AddRecordForm isEditing={true} recordToEdit={recordToEdit} handleEditSave={handleEditSave} handleEditDelete={handleEditDelete} />
           </Modal.Content>
         </Modal>
       </TransitionablePortal>
@@ -54,4 +59,4 @@ const mapStateToProps = (state) => ({
   record: state.records
 })
 
-export default connect(mapStateToProps, { editRecord })(EditRecordModal);
+export default connect(mapStateToProps, { editRecord, deleteRecord })(EditRecordModal);
