@@ -145,9 +145,17 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
             <Form.Input label="Spotify URL" name="spotify_url" placeholder="Link to Spotify" onChange={(event, data) => handleChange(data)} value={spotify_url.value} error={spotify_url.error} />
             <Form.Input label="Purchase URL" name="purchase_url" placeholder="Link to store" onChange={(event, data) => handleChange(data)} value={purchase_url.value} error={purchase_url.error} />
             <div style={{ display: 'flex'}}>
-              {isEditing ? (<div style={{ display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
-                <Form.Button onClick={ (event) => handleDelete(event) } negative>Delete</Form.Button>
-              </div>) : ''}
+              {isEditing ? (
+                <div style={{ display: 'flex', justifyContent: 'flex-start', paddingRight: '1em' }}>
+                  <Form.Button onClick={ (event) => handleDelete(event) } negative>Delete</Form.Button>
+                </div>
+              ) : ''}
+              {isEditing ? (
+                <div style={{ opacity: 0.4, display: 'flex', width: '100%', flexDirection: 'column', justifyContent: 'center' }}>
+                  <small>Added: <b>{new Date(recordToEdit.created_at).toLocaleDateString()}</b></small>
+                  <small>Last updated: <b>{new Date(recordToEdit.updated_at).toLocaleDateString()}</b></small>
+                </div>
+              ) : ''}
               <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
                 <Form.Button onClick={ (event) => handleSubmit(event) }>{!isEditing ? 'Submit' : 'Save'}</Form.Button>
               </div>
