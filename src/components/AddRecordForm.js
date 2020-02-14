@@ -33,6 +33,8 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
         return setSpotifyURL({ value: data.value, error: false });
       case 'PURCHASE_URL':
         return setPurchaseURL({ value: data.value, error: false });
+      default:
+        return;
     }
   }
 
@@ -116,7 +118,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
   return (
     <div>
       <h2>{!isEditing ? 'Add new' : 'Editing'} record</h2>
-        <Segment>
+        <Segment style={{ marginBottom: '1em' }}>
           <Form>
             <Form.Input label="Name" placeholder="Record name" required onChange={(event, { value }) => handleChange({ field: 'NAME', value })} value={name.value} error={name.error} />
             <Form.Input label="Artist" placeholder="Record artist(s)" required onChange={(event, { value }) => handleChange({ field: 'ARTIST', value })} value={artist.value} error={artist.error} />
