@@ -54,7 +54,7 @@ export const sendPromoteRequest = (id) => (dispatch) => {
   return new Promise(async (res, rej) => {
     try {
       dispatch({ type: SEND_PROMOTE_REQUEST });
-      await ky.post(`/api/requests/promote/${id}`);
+      await ky.put(`/api/requests/promote/${id}`);
       res();
 
     } catch (error) {
