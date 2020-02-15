@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
 import { getRecords } from './store/actions/records';
-import { getRequests, addRequest, promoteRequest } from './store/actions/requests';
+import { getRequests, addRequest, promoteRequest, deleteRequest } from './store/actions/requests';
 
 const mapStateToProps = ({ auth }) => {
   return {
@@ -29,7 +29,7 @@ const ButtonDark = Styled(Button)({
   }
 });
 
-const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest }) => {
 
   useEffect(() => {
     (async () => {
@@ -46,8 +46,9 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
 
       socket.on('new-request', (request) => addRequest(request));
       socket.on('promote-request', (id) => promoteRequest(id));
+      socket.on('delete-request', (id) => deleteRequest(id));
     })();
-  }, [getRecords, getRequests, addRequest]);
+  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest]);
 
   return (
     <Router>
@@ -87,4 +88,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest })(App);

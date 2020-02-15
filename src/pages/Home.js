@@ -9,7 +9,6 @@ import RecordsGrid from '../components/RecordsGrid';
 
 const Home = () => {
   return (
-    // <h2>Records</h2>
     <div style={{ padding: 20 }}>
       <RecordsGrid/>
     </div>

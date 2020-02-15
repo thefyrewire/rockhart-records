@@ -1,4 +1,4 @@
-import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST } from '../types/requests';
+import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST } from '../types/requests';
 
 const initialState = [];
 
@@ -15,6 +15,8 @@ export default (state = initialState, action = {}) => {
       newState.unshift(...newState.splice(index, 1));
       return newState;
     }
+    case DELETE_REQUEST:
+      return state.filter(request => request.id !== action.id);
     default:
       return state;
   }
