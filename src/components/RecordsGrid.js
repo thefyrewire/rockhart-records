@@ -3,6 +3,8 @@ import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon
 import { connect } from 'react-redux';
 import Styled from 'styled-components';
 
+import { createRequest } from '../store/actions/requests';
+
 const RequestButton = Styled(Button)({
   backgroundColor: '#d70000 !important',
   color: '#fff !important',
@@ -29,7 +31,7 @@ const PurchaseButton = Styled(Button)({
   }
 });
 
-const Records = ({ record: { records } }) => {
+const Records = ({ record: { records }, createRequest }) => {
   const renderable = 4;
   const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [] };
 
@@ -91,6 +93,10 @@ const Records = ({ record: { records } }) => {
     dispatch({ type: 'UPDATE_RENDERED' });
   }
 
+  const handleClickRequest = async (id) => {
+    await createRequest(id);
+  }
+
   return (
     <div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: window.innerWidth <= 550 ? 'column' : 'row' }}>
@@ -112,7 +118,7 @@ const Records = ({ record: { records } }) => {
                     <Card.Content extra>
                       {record.spotify_url ? (<SpotifyButton floated="left" href="https://google.com" target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
                       {record.purchase_url ? (<PurchaseButton floated="left" href="https://google.com" target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
-                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small">Request</RequestButton>
+                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)}>Request</RequestButton>
                     </Card.Content>
                   </Card>
                 </Grid.Column>
@@ -136,4 +142,4 @@ const mapStateToProps = (state) => ({
   record: state.records
 });
 
-export default connect(mapStateToProps)(Records);
+export default connect(mapStateToProps, { createRequest })(Records);
