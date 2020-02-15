@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import { Button, Container, Menu } from 'semantic-ui-react';
 
 import { connect } from 'react-redux';
+import io from 'socket.io-client';
 
 import { getRecords } from './store/actions/records';
 
@@ -26,6 +27,16 @@ const ButtonDark = Styled(Button)({
     backgroundColor: '#4d4d4d !important'
   }
 });
+
+const socket = io('http://localhost:5000');
+
+// socket.on('connected', (data) => {
+//   console.log(data);
+// });
+
+// socket.on('new-request', (data) => {
+//   console.log(data);
+// });
 
 const App = ({ authenticated, user, getRecords }) => {
 
