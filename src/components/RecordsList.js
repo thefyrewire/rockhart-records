@@ -22,7 +22,7 @@ const RecordsList = ({ record: { records }}) => {
     <div>
       <h2>Records</h2>
       <Segment>
-        <List style={{ height: 416, overflowY: 'scroll' }}>
+        <List style={{ height: 416, overflowY: 'scroll', margin: '0' }}>
           {records.sort((a, b) => a.name > b.name).map((record, i) => (
             <List.Item key={record.id} style={{ display: 'flex', backgroundColor: (i % 2 === 0) ? '#fff' : '#f5f5f5' }}>
               <div style={{ display: 'flex', width: '100%', alignItems: 'center', paddingLeft: '1em' }}>
