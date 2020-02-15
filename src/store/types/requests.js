@@ -1,1 +1,3 @@
+export const SET_REQUESTS = 'SET_REQUESTS';
+export const MADE_ADD_REQUEST = 'MADE_ADD_REQUEST';
 export const ADD_REQUEST = 'ADD_REQUEST';

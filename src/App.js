@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
 import { getRecords } from './store/actions/records';
+import { getRequests, addRequest } from './store/actions/requests';
 
 const mapStateToProps = ({ auth }) => {
   return {
@@ -28,24 +29,26 @@ const ButtonDark = Styled(Button)({
   }
 });
 
-const socket = io('http://localhost:5000');
-
-// socket.on('connected', (data) => {
-//   console.log(data);
-// });
-
-// socket.on('new-request', (data) => {
-//   console.log(data);
-// });
-
-const App = ({ authenticated, user, getRecords }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest }) => {
 
   useEffect(() => {
     (async () => {
       console.log('Fetching records!');
       await getRecords();
+      console.log('Fetching requests!');
+      await getRequests();
+
+      const socket = io('http://localhost:5000');
+
+      socket.on('connected', () => {
+        console.log('Connected');
+      });
+
+      socket.on('new-request', (request) => {
+        addRequest(request);
+      });
     })();
-  }, [getRecords]);
+  }, [getRecords, getRequests, addRequest]);
 
   return (
     <Router>
@@ -85,4 +88,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest })(App);
