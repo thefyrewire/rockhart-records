@@ -6,10 +6,14 @@
 */
 
 import React from 'react';
+import RequestsList from '../components/RequestsList';
 
 const Requests = () => {
   return (
-    <h2>Requests</h2>
+    <div style={{ padding: 20 }}>
+      <RequestsList />
+    </div>
+
   )
 }
 

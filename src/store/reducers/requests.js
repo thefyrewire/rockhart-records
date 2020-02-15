@@ -1,4 +1,4 @@
-import { SET_REQUESTS, ADD_REQUEST } from '../types/requests';
+import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST } from '../types/requests';
 
 const initialState = [];
 
@@ -8,6 +8,13 @@ export default (state = initialState, action = {}) => {
       return [...action.requests]
     case ADD_REQUEST:
       return [...state, action.request]
+    case PROMOTE_REQUEST: {
+      const index = state.findIndex(request => request.id === action.id);
+      if (index === -1) return state;
+      const newState = state.slice();
+      newState.unshift(...newState.splice(index, 1));
+      return newState;
+    }
     default:
       return state;
   }

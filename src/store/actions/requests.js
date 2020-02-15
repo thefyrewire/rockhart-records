@@ -1,4 +1,4 @@
-import { SET_REQUESTS, MADE_ADD_REQUEST, ADD_REQUEST } from '../types/requests';
+import { SET_REQUESTS, SEND_ADD_REQUEST, ADD_REQUEST, SEND_PROMOTE_REQUEST, PROMOTE_REQUEST } from '../types/requests';
 import ky from 'ky';
 
 export const setRequests = (requests) => {
@@ -8,16 +8,17 @@ export const setRequests = (requests) => {
   }
 }
 
-export const madeAddRequest = () => {
-  return {
-    type: MADE_ADD_REQUEST
-  }
-}
-
 export const addRequest = (request) => {
   return {
     type: ADD_REQUEST,
     request
+  }
+}
+
+export const promoteRequest = (id) => {
+  return {
+    type: PROMOTE_REQUEST,
+    id
   }
 }
 
@@ -35,11 +36,25 @@ export const getRequests = () => (dispatch) => {
   })
 }
 
-export const createRequest = (request) => (dispatch) => {
+export const createRequest = (id) => (dispatch) => {
   return new Promise(async (res, rej) => {
     try {
-      await ky.post(`/api/requests/new/${request}`);
-      dispatch(madeAddRequest());
+      dispatch({ type: SEND_ADD_REQUEST });
+      await ky.post(`/api/requests/new/${id}`);
+      res();
+
+    } catch (error) {
+      console.log(error.message);
+      rej();
+    }
+  });
+}
+
+export const sendPromoteRequest = (id) => (dispatch) => {
+  return new Promise(async (res, rej) => {
+    try {
+      dispatch({ type: SEND_PROMOTE_REQUEST });
+      await ky.post(`/api/requests/promote/${id}`);
       res();
 
     } catch (error) {
