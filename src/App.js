@@ -11,7 +11,7 @@ import { Button, Container, Menu } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
-import { getRecords } from './store/actions/records';
+import { getRecords, loadingRecords, loadedRecords } from './store/actions/records';
 import { getRequests, addRequest, promoteRequest, deleteRequest } from './store/actions/requests';
 
 const mapStateToProps = ({ auth }) => {
@@ -29,12 +29,15 @@ const ButtonDark = Styled(Button)({
   }
 });
 
-const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords }) => {
 
   useEffect(() => {
     (async () => {
+      loadingRecords();
       console.log('Fetching records!');
       await getRecords();
+      loadedRecords();
+
       console.log('Fetching requests!');
       await getRequests();
 
@@ -48,7 +51,7 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       socket.on('promote-request', (id) => promoteRequest(id));
       socket.on('delete-request', (id) => deleteRequest(id));
     })();
-  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest]);
+  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords]);
 
   return (
     <Router>
@@ -88,4 +91,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords })(App);

@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon } from 'semantic-ui-react';
+import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon, Loader } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Styled from 'styled-components';
 
@@ -31,7 +31,7 @@ const PurchaseButton = Styled(Button)({
   }
 });
 
-const Records = ({ record: { records }, createRequest }) => {
+const Records = ({ records, loading }, createRequest) => {
   const renderable = 4;
   const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [] };
 
@@ -125,8 +125,9 @@ const Records = ({ record: { records }, createRequest }) => {
               ))
             ) : (
               <div style={{ width: '100%', height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <h3>No records found...</h3>
+                {loading ? (<Loader active content="Loading" />) : (<h3>No records found...</h3>)}
               </div>
+
             )}
           </Grid.Row>
         </Responsive>
@@ -138,8 +139,9 @@ const Records = ({ record: { records }, createRequest }) => {
   )
 }
 
-const mapStateToProps = (state) => ({
-  record: state.records
+const mapStateToProps = ({ records: { records, loading } }) => ({
+  records,
+  loading
 });
 
 export default connect(mapStateToProps, { createRequest })(Records);

@@ -1,7 +1,8 @@
-import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD, REMOVE_RECORD } from '../types/records';
+import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD, REMOVE_RECORD, LOADING_RECORDS, LOADED_RECORDS } from '../types/records';
 
 const initialState = {
-  records: []
+  records: [],
+  loading: true
 }
 
 export default (state = initialState, action = {}) => {
@@ -25,6 +26,16 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         records: state.records.filter(record => record.id !== action.id)
+      }
+    case LOADING_RECORDS:
+      return {
+        ...state,
+        loading: true
+      }
+    case LOADED_RECORDS:
+      return {
+        ...state,
+        loading: false
       }
     default:
       return state;

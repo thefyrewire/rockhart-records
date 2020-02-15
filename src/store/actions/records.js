@@ -1,4 +1,4 @@
-import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD, REMOVE_RECORD } from '../types/records';
+import { SET_RECORDS, ADD_RECORD, UPDATE_RECORD, REMOVE_RECORD, LOADING_RECORDS, LOADED_RECORDS } from '../types/records';
 import ky from 'ky';
 
 export const setRecords = (records) => {
@@ -27,6 +27,18 @@ export const removeRecord = (id) => {
   return {
     type: REMOVE_RECORD,
     id
+  }
+}
+
+export const loadingRecords = () => {
+  return {
+    type: LOADING_RECORDS
+  }
+}
+
+export const loadedRecords = () => {
+  return {
+    type: LOADED_RECORDS
   }
 }
 
