@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { sendPromoteRequest, sendDeleteRequest } from '../store/actions/requests';
 
 const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendDeleteRequest }) => {
-  const user_name = authenticated ? user.user_name : null; // since already using user.user_name is map requests below
+  const user_name = authenticated ? user.user_name : null; // since already using user.user_name in map requests below
   const level = authenticated ? user.level : null; // same
 
   const handleClickPromote = async (id) => {
