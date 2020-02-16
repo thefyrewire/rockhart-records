@@ -10,7 +10,8 @@ export default (state = initialState, action = {}) => {
     case SET_REQUESTS:
       return {
         ...state,
-        requests: [...action.requests]
+        requests: [...action.requests.requests],
+        current: action.requests.current
       }
     case ADD_REQUEST:
       return {
