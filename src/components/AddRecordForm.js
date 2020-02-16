@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Form, Segment, Responsive } from 'semantic-ui-react';
 
 import { createRecord } from '../store/actions/records';
+import TimeAgo from './TimeAgo';
 
 const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit, handleEditDelete }) => {
   const initialState = {
@@ -158,8 +159,8 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
               ) : ''}
               {isEditing ? (
                 <div style={{ opacity: 0.4, display: 'flex', width: '100%', flexDirection: 'column', justifyContent: 'center' }}>
-                  <small>Added: <b>{new Date(recordToEdit.created_at).toLocaleDateString()}</b></small>
-                  <small>Last updated: <b>{new Date(recordToEdit.updated_at).toLocaleDateString()}</b></small>
+                  <small>Added: <b><TimeAgo date={recordToEdit.created_at} /></b></small>
+                  <small>Last updated: <b><TimeAgo date={recordToEdit.updated_at} /></b></small>
                 </div>
               ) : ''}
               <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>

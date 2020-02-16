@@ -3,6 +3,7 @@ import { Segment, Table, Transition, Button, List, Image } from 'semantic-ui-rea
 import { connect } from 'react-redux';
 
 import { sendPromoteRequest, sendDeleteRequest, sendNextRequest } from '../store/actions/requests';
+import TimeAgo from './TimeAgo';
 
 const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendDeleteRequest, sendNextRequest, current }) => {
   const user_name = authenticated ? user.user_name : null; // since already using user.user_name in map requests below
@@ -48,8 +49,8 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
                 <Table.Row>
                   <Table.HeaderCell collapsing>Position</Table.HeaderCell>
                   <Table.HeaderCell>Record</Table.HeaderCell>
-                  <Table.HeaderCell>Requester</Table.HeaderCell>
-                  <Table.HeaderCell>Requested At</Table.HeaderCell>
+                  <Table.HeaderCell>User</Table.HeaderCell>
+                  <Table.HeaderCell>Requested</Table.HeaderCell>
                   {authenticated && user.level === 'admin' ? (
                     <Table.HeaderCell>Admin Options</Table.HeaderCell>
                   ) : null}
@@ -74,9 +75,9 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
                       </List>
                     </Table.Cell>
                     <Table.Cell>{user_name ? (<b>{user.user_name}</b>) : user.user_name}</Table.Cell>
-                    <Table.Cell>{new Date(created_at).toLocaleString()}</Table.Cell>
+                    <Table.Cell><TimeAgo date={created_at} /></Table.Cell>
                       {authenticated && level === 'admin' ? (
-                        <Table.Cell textAlign="center" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                        <Table.Cell textAlign="center" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'space-evenly' }}>
                           <Button icon="angle double up" onClick={() => handleClickPromote(id)} />
                           <Button icon="delete" onClick={() => handleClickRemove(id)} />
                         </Table.Cell>
@@ -85,11 +86,11 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
                 ))}
               </Transition.Group>
 
-              <Table.Footer>
+              {/* <Table.Footer>
                 <Table.Row>
                   
                 </Table.Row>
-              </Table.Footer>
+              </Table.Footer> */}
             </Table>
             </>
           ) : (
