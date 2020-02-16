@@ -6,10 +6,26 @@
 */
 
 import React, { useState } from 'react';
-import { Grid, Responsive } from 'semantic-ui-react';
+import { Grid, Responsive, Segment } from 'semantic-ui-react';
 
 import RequestsList from '../components/RequestsList';
 import CurrentRequest from '../components/CurrentRequest';
+import RequestHistory from '../components/RequestHistory';
+
+const CurrentAndHistory = () => (
+  <Segment>
+    <Grid celled="internally" stretched>
+      <Grid.Row>
+        <Grid.Column mobile={16} computer={16}>
+          <CurrentRequest />
+        </Grid.Column>
+        <Grid.Column mobile={16} computer={16} style={{ boxShadow: 'none' }}>
+          <RequestHistory />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  </Segment>
+)
 
 const Requests = () => {
   const [shouldStack, setShouldStack] = useState(false);
@@ -23,15 +39,21 @@ const Requests = () => {
     <div style={{ padding: 20 }}>
       <Grid celled="internally">
         <Responsive as={Grid.Row} columns={2} onUpdate={handleResizeUpdate} fireOnMount>
-          {shouldStack ? (<Grid.Column mobile={16} computer={4}>
-            <CurrentRequest />
-          </Grid.Column>) : null}
+          {shouldStack ? (
+            <Grid.Column mobile={16} computer={4}>
+              <CurrentAndHistory />
+            </Grid.Column>
+          ): null}
           <Grid.Column mobile={16} computer={12} style={{ boxShadow: 'none' }}>
-            <RequestsList />
+            <Grid.Column>
+              <RequestsList />
+            </Grid.Column>
           </Grid.Column>
-          {!shouldStack ? (<Grid.Column mobile={16} computer={4} style={{ boxShadow: 'none' }}>
-            <CurrentRequest />
-          </Grid.Column>) : null}
+          {!shouldStack ? (
+            <Grid.Column mobile={16} computer={4} style={{ boxShadow: 'none' }}>
+              <CurrentAndHistory />
+            </Grid.Column>
+          ): null}
         </Responsive>
       </Grid>
     </div>
