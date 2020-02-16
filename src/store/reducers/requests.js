@@ -1,22 +1,43 @@
-import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST } from '../types/requests';
+import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST } from '../types/requests';
 
-const initialState = [];
+const initialState = {
+  requests: [],
+  current: null
+};
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
     case SET_REQUESTS:
-      return [...action.requests]
+      return {
+        ...state,
+        requests: [...action.requests]
+      }
     case ADD_REQUEST:
-      return [...state, action.request]
+      return {
+        ...state,
+        requests: [...state.requests, action.request]
+      }
     case PROMOTE_REQUEST: {
-      const index = state.findIndex(request => request.id === action.id);
+      const index = state.requests.findIndex(request => request.id === action.id);
       if (index === -1) return state;
-      const newState = state.slice();
-      newState.unshift(...newState.splice(index, 1));
-      return newState;
+      const newRequestsState = state.requests.slice();
+      newRequestsState.unshift(...newRequestsState.splice(index, 1));
+      return {
+        ...state,
+        requests: newRequestsState
+      };
     }
     case DELETE_REQUEST:
-      return state.filter(request => request.id !== action.id);
+      return {
+        ...state,
+        requests: state.requests.filter(request => request.id !== action.id)
+      };
+    case NEXT_REQUEST:
+      return {
+        ...state,
+        requests: state.requests.filter(request => request.id !== action.request.id),
+        current: action.request
+      }
     default:
       return state;
   }

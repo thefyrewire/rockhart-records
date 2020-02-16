@@ -1,4 +1,4 @@
-import { SET_REQUESTS, SEND_ADD_REQUEST, ADD_REQUEST, SEND_PROMOTE_REQUEST, PROMOTE_REQUEST, SEND_DELETE_REQUEST, DELETE_REQUEST } from '../types/requests';
+import { SET_REQUESTS, SEND_ADD_REQUEST, ADD_REQUEST, SEND_PROMOTE_REQUEST, PROMOTE_REQUEST, SEND_DELETE_REQUEST, DELETE_REQUEST, SEND_NEXT_REQUEST, NEXT_REQUEST } from '../types/requests';
 import ky from 'ky';
 
 export const setRequests = (requests) => {
@@ -26,6 +26,13 @@ export const deleteRequest = (id) => {
   return {
     type: DELETE_REQUEST,
     id
+  }
+}
+
+export const nextRequest = (request) => {
+  return {
+    type: NEXT_REQUEST,
+    request
   }
 }
 
@@ -76,6 +83,20 @@ export const sendDeleteRequest = (id) => (dispatch) => {
     try {
       dispatch({ type: SEND_DELETE_REQUEST });
       await ky.delete(`/api/requests/${id}`);
+      res();
+
+    } catch (error) {
+      console.log(error.message);
+      rej();
+    }
+  });
+}
+
+export const sendNextRequest = () => (dispatch) => {
+  return new Promise(async (res, rej) => {
+    try {
+      dispatch({ type: SEND_NEXT_REQUEST });
+      await ky.put('/api/requests/next');
       res();
 
     } catch (error) {
