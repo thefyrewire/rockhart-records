@@ -5,24 +5,34 @@
 * - (?) but only logged in users can see the option to remove their own requests
 */
 
-import React from 'react';
-import { Grid } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Grid, Responsive } from 'semantic-ui-react';
 
 import RequestsList from '../components/RequestsList';
 import CurrentRequest from '../components/CurrentRequest';
 
 const Requests = () => {
+  const [shouldStack, setShouldStack] = useState(false);
+
+  const handleResizeUpdate = () => {
+    if (window.innerWidth >= 992) setShouldStack(false);
+    else setShouldStack(true);
+  }
+
   return (
     <div style={{ padding: 20 }}>
       <Grid celled="internally">
-        <Grid.Row columns={2}>
-          <Grid.Column mobile={16} computer={12}>
+        <Responsive as={Grid.Row} columns={2} onUpdate={handleResizeUpdate} fireOnMount>
+          {shouldStack ? (<Grid.Column mobile={16} computer={4}>
+            <CurrentRequest />
+          </Grid.Column>) : null}
+          <Grid.Column mobile={16} computer={12} style={{ boxShadow: 'none' }}>
             <RequestsList />
           </Grid.Column>
-          <Grid.Column mobile={16} computer={4} style={{ boxShadow: 'none' }}>
+          {!shouldStack ? (<Grid.Column mobile={16} computer={4} style={{ boxShadow: 'none' }}>
             <CurrentRequest />
-          </Grid.Column>
-        </Grid.Row>
+          </Grid.Column>) : null}
+        </Responsive>
       </Grid>
     </div>
 
