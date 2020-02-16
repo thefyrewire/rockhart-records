@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
 import { getRecords, loadingRecords, loadedRecords } from './store/actions/records';
-import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest } from './store/actions/requests';
+import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest, clearCurrentRequest } from './store/actions/requests';
 
 const mapStateToProps = ({ auth }) => {
   return {
@@ -51,7 +51,7 @@ const pageTransitions = {
   }
 }
 
-const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest }) => {
 
   useEffect(() => {
     (async () => {
@@ -70,8 +70,9 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       socket.on('promote-request', (id) => promoteRequest(id));
       socket.on('delete-request', (id) => deleteRequest(id));
       socket.on('next-request', ({ request }) => nextRequest(request));
+      socket.on('clear-current-request', (request) => clearCurrentRequest(request));
     })();
-  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords]);
+  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest]);
 
   return (
     <Router>
@@ -115,4 +116,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest })(App);

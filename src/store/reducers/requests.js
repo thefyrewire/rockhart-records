@@ -1,8 +1,9 @@
-import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST } from '../types/requests';
+import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST, CLEAR_CURRENT_REQUEST } from '../types/requests';
 
 const initialState = {
   requests: [],
-  current: null
+  current: null,
+  history: []
 };
 
 export default (state = initialState, action = {}) => {
@@ -10,8 +11,9 @@ export default (state = initialState, action = {}) => {
     case SET_REQUESTS:
       return {
         ...state,
-        requests: [...action.requests.requests],
-        current: action.requests.current
+        requests: action.requests.requests,
+        current: action.requests.current,
+        history: action.requests.history
       }
     case ADD_REQUEST:
       return {
@@ -37,7 +39,14 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         requests: state.requests.filter(request => request.id !== action.request.id),
-        current: action.request
+        current: action.request,
+        history: state.current ? [state.current, ...state.history] : []
+      }
+    case CLEAR_CURRENT_REQUEST:
+      return {
+        ...state,
+        current: null,
+        history: [action.request, ...state.history]
       }
     default:
       return state;

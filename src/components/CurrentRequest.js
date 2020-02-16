@@ -1,8 +1,14 @@
 import React from 'react';
-import { Segment, Image, List } from 'semantic-ui-react';
+import { Segment, Image, List, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-const RequestRail = ({ current }) => {
+import { sendClearCurrentRequest } from '../store/actions/requests';
+
+const RequestRail = ({ current, sendClearCurrentRequest }) => {
+  const handleClickClear = async () => {
+    await sendClearCurrentRequest();
+  }
+
   return (
     <>
       <style>{`
@@ -21,16 +27,19 @@ const RequestRail = ({ current }) => {
           {current ? (
             <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
               <Image circular size="small" src={current.record.album_art} className="record-spin" />
-              <List style={{ textAlign: 'center' }}>
+              <List style={{ textAlign: 'center', marginBottom: 0 }} size="big">
                 <List.Item>
                   <List.Header>{current.record.name}</List.Header>
                   <List.Description>{current.record.artist}</List.Description>
                 </List.Item>
+              </List>
+              <List style={{ textAlign: 'center' }}>
                 <List.Item style={{ opacity: 0.5 }}>
                   <List.Description>Requested by</List.Description>
                   <List.Header>{current.user.user_name}</List.Header>
                 </List.Item>
               </List>
+              <Button fluid icon="delete" content="Clear" onClick={handleClickClear} />
             </div>
           ) : (
             <div style={{ textAlign: 'center' }}>
@@ -47,4 +56,4 @@ const mapStateToProps = (state) => ({
   current: state.requests.current
 });
 
-export default connect(mapStateToProps)(RequestRail);
+export default connect(mapStateToProps, { sendClearCurrentRequest })(RequestRail);
