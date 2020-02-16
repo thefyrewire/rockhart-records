@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon, Loader } from 'semantic-ui-react';
+import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon, Loader, Placeholder } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Styled from 'styled-components';
 
@@ -31,9 +31,9 @@ const PurchaseButton = Styled(Button)({
   }
 });
 
-const Records = ({ records, loading }, createRequest) => {
+const Records = ({ records, loading, createRequest }) => {
   const renderable = 4;
-  const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [] };
+  const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [], removedPlaceholders: [] };
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -53,6 +53,11 @@ const Records = ({ records, loading }, createRequest) => {
           ...state,
           renderedRecords: state.renderableRecords.slice((state.page*renderable)-renderable, state.page*renderable)
         };
+      case 'REMOVE_PLACEHOLDER':
+        return {
+          ...state,
+          removedPlaceholders: [...state.removedPlaceholders, action.id]
+        }
       default:
         return state;
     }
@@ -97,6 +102,10 @@ const Records = ({ records, loading }, createRequest) => {
     await createRequest(id);
   }
 
+  const handleRemovePlaceholder = (id) => {
+    dispatch({ type: 'REMOVE_PLACEHOLDER', id })
+  }
+
   return (
     <div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: window.innerWidth <= 550 ? 'column' : 'row' }}>
@@ -110,7 +119,12 @@ const Records = ({ records, loading }, createRequest) => {
               state.renderedRecords.map(record => (
                 <Grid.Column key={record.id} style={{ boxShadow: 'none' }}>
                   <Card centered>
-                    <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false}></Image>
+                    {state.removedPlaceholders.indexOf(record.id) === -1 ? (
+                      <Placeholder>
+                        <Placeholder.Image square />
+                      </Placeholder>
+                    ) : null}
+                    <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false} style={{ display: state.removedPlaceholders.indexOf(record.id) === -1 ? 'none' : 'block' }} onLoad={() => handleRemovePlaceholder(record.id)}></Image>
                     <Card.Content>
                       <Card.Header>{record.name}</Card.Header>
                       <Card.Description>{record.artist}</Card.Description>
@@ -127,7 +141,6 @@ const Records = ({ records, loading }, createRequest) => {
               <div style={{ width: '100%', height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {loading ? (<Loader active content="Loading" />) : (<h3>No records found...</h3>)}
               </div>
-
             )}
           </Grid.Row>
         </Responsive>
