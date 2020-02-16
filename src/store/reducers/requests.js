@@ -40,13 +40,13 @@ export default (state = initialState, action = {}) => {
         ...state,
         requests: state.requests.filter(request => request.id !== action.request.id),
         current: action.request,
-        history: state.current ? [...state.history, state.current] : state.history
+        history: state.current ? [...state.history, state.current].slice(0, 10) : state.history
       }
     case CLEAR_CURRENT_REQUEST:
       return {
         ...state,
         current: null,
-        history: [...state.history, action.request]
+        history: [...state.history, action.request].slice(0, 10)
       }
     default:
       return state;
