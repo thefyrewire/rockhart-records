@@ -147,7 +147,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
           <Form>
             <Form.Input label="Name" name="name" placeholder="Record name" required onChange={handleChange} value={name.value} error={name.error} />
             <Form.Input label="Artist" name="artist" placeholder="Record artist(s)" required onChange={handleChange} value={artist.value} error={artist.error} />
-            <Responsive as={Form.Input} onUpdate={handleResizeUpdate} fireOnMount label="Album Art" name="album_art" placeholder="URL or browse" required onChange={handleChange} value={album_art.value} error={album_art.error} action={{ icon: 'folder open', content: browseIconContent.length > 0 ? browseIconContent : null, onClick: (event) => handleBrowse(event) }} />
+            <Responsive as={Form.Input} onUpdate={handleResizeUpdate} fireOnMount label="Album Art" name="album_art" placeholder="URL or Browse..." required onChange={handleChange} value={album_art.value} error={album_art.error} action={{ icon: 'folder open', content: browseIconContent.length > 0 ? browseIconContent : null, onClick: (event) => handleBrowse(event) }} />
             <Form.Input label="Spotify URL" name="spotify_url" placeholder="Link to Spotify" onChange={handleChange} value={spotify_url.value} error={spotify_url.error} />
             <Form.Input label="Purchase URL" name="purchase_url" placeholder="Link to store" onChange={handleChange} value={purchase_url.value} error={purchase_url.error} />
             <div style={{ display: 'flex'}}>
