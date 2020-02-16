@@ -1,5 +1,5 @@
 import React from 'react';
-import { Segment, List, Image } from 'semantic-ui-react';
+import { Segment, List, Image, Transition } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import TimeAgo from './TimeAgo';
@@ -9,7 +9,7 @@ const RequestHistory = ({ history }) => {
     <div>
       <h2>Request History</h2>
       <Segment>
-        <List>
+        <Transition.Group as={List} animation="fade up">
           {history.map(request => (
             <List.Item key={request.id} style={{ height: 60, display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
@@ -24,7 +24,7 @@ const RequestHistory = ({ history }) => {
               </div>
             </List.Item>
           ))}
-        </List>
+        </Transition.Group>
       </Segment>
     </div>
   )

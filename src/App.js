@@ -34,19 +34,19 @@ const pageTransitions = {
   atEnter: {
     transitionIndex: 0,
     offset: 100,
-    scale: 0.5,
+    // scale: 0.5,
     opacity: 0
   },
   atActive: {
     transitionIndex: 1,
     offset: 0,
-    scale: 1,
+    // scale: 1,
     opacity: 1
   },
   atLeave: {
     transitionIndex: 2,
     offset: -100,
-    scale: 0.5,
+    // scale: 0.5,
     opacity: 0
   }
 }
@@ -98,7 +98,8 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
         </Container>
       </Menu>
       <AnimatedSwitch style={{ position: 'relative' }} {...pageTransitions} mapStyles={styles => ({
-        transform: `translateX(${styles.offset}%) scale(${styles.scale})`,
+        // transform: `translateX(${styles.offset}%) scale(${styles.scale})`,
+        transform: `translateX(${styles.offset}%)`,
         position: styles.transitionIndex <= 1 ? 'relative' : 'absolute',
         opacity: styles.opacity
       })}>
