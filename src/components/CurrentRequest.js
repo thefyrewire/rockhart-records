@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { sendClearCurrentRequest } from '../store/actions/requests';
 
-const RequestRail = ({ current, sendClearCurrentRequest }) => {
+const CurrentRequest = ({ current, sendClearCurrentRequest, auth: { authenticated, user } }) => {
   const handleClickClear = async () => {
     await sendClearCurrentRequest();
   }
@@ -39,7 +39,7 @@ const RequestRail = ({ current, sendClearCurrentRequest }) => {
                   <List.Header>{current.user.user_name}</List.Header>
                 </List.Item>
               </List>
-              <Button fluid icon="delete" content="Clear" onClick={handleClickClear} />
+              {authenticated && user.level === 'admin' ? (<Button fluid icon="delete" content="Clear" onClick={handleClickClear} />) : null}
             </div>
           ) : (
             <div style={{ textAlign: 'center' }}>
@@ -53,7 +53,8 @@ const RequestRail = ({ current, sendClearCurrentRequest }) => {
 }
 
 const mapStateToProps = (state) => ({
-  current: state.requests.current
+  current: state.requests.current,
+  auth: state.auth
 });
 
-export default connect(mapStateToProps, { sendClearCurrentRequest })(RequestRail);
+export default connect(mapStateToProps, { sendClearCurrentRequest })(CurrentRequest);
