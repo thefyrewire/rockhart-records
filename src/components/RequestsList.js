@@ -2,9 +2,9 @@ import React from 'react';
 import { Segment, Table, Transition, Button, List, Image } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-import { sendPromoteRequest, sendDeleteRequest } from '../store/actions/requests';
+import { sendPromoteRequest, sendDeleteRequest, sendNextRequest } from '../store/actions/requests';
 
-const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendDeleteRequest }) => {
+const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendDeleteRequest, sendNextRequest, current }) => {
   const user_name = authenticated ? user.user_name : null; // since already using user.user_name in map requests below
   const level = authenticated ? user.level : null; // same
 
@@ -12,8 +12,12 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
     await sendPromoteRequest(id);
   }
 
-  const handleClickRemove = async (id) =>{
+  const handleClickRemove = async (id) => {
     await sendDeleteRequest(id);
+  }
+
+  const handleClickNext = async () => {
+    await sendNextRequest();
   }
 
   return (
@@ -30,10 +34,16 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
         }
       `}</style>
       <div>
-        <h1>Record Requests</h1>
+        <h2>Record Requests</h2>
         <Segment>
           {requests.length > 0 ? (
-            <Table celled definition striped>
+            <>
+              {authenticated && user.level === 'admin' ? (
+                <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
+                  <Button onClick={handleClickNext}>Next</Button> 
+                </div>
+              ) : null}
+              <Table celled definition striped>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell collapsing>Position</Table.HeaderCell>
@@ -81,6 +91,7 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
                 </Table.Row>
               </Table.Footer>
             </Table>
+            </>
           ) : (
             <div style={{ width: '100%', height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <h3>No requests yet...</h3>
@@ -92,10 +103,11 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
   )
 }
 
-const mapStateToProps = ({ auth, requests }) => ({
-  authenticated: auth.authenticated,
-  user: auth.user,
-  requests
+const mapStateToProps = ({ auth: { authenticated, user }, requests: { requests, current } }) => ({
+  authenticated,
+  user,
+  requests,
+  current
 });
 
-export default connect(mapStateToProps, { sendPromoteRequest, sendDeleteRequest })(RequestsList);
+export default connect(mapStateToProps, { sendPromoteRequest, sendDeleteRequest, sendNextRequest })(RequestsList);
