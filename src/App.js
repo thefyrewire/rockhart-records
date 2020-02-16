@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Styled from 'styled-components';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
+import { AnimatedSwitch } from 'react-router-transition';
 
 import Home from './pages/Home';
 import Requests from './pages/Requests';
@@ -29,6 +30,27 @@ const ButtonDark = Styled(Button)({
   }
 });
 
+const pageTransitions = {
+  atEnter: {
+    transitionIndex: 0,
+    offset: 100,
+    scale: 0.5,
+    opacity: 0
+  },
+  atActive: {
+    transitionIndex: 1,
+    offset: 0,
+    scale: 1,
+    opacity: 1
+  },
+  atLeave: {
+    transitionIndex: 2,
+    offset: -100,
+    scale: 0.5,
+    opacity: 0
+  }
+}
+
 const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords }) => {
 
   useEffect(() => {
@@ -42,10 +64,7 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       await getRequests();
 
       const socket = io('http://localhost:5000');
-
-      socket.on('connected', () => {
-        console.log('Connected');
-      });
+      socket.on('connected', () => console.log('Connected'));
 
       socket.on('new-request', (request) => addRequest(request));
       socket.on('promote-request', (id) => promoteRequest(id));
@@ -76,11 +95,15 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
           </Menu.Item>
         </Container>
       </Menu>
-      <Switch>
+      <AnimatedSwitch style={{ position: 'relative' }} {...pageTransitions} mapStyles={styles => ({
+        transform: `translateX(${styles.offset}%) scale(${styles.scale})`,
+        position: styles.transitionIndex <= 1 ? 'relative' : 'absolute',
+        opacity: styles.opacity
+      })}>
         <Route exact path="/" render={() => <Home/>}></Route>
         <Route exact path="/requests" render={() => <Requests/>}></Route>
         <PrivateRoute exact path="/dashboard" component={Dashboard} user={user}></PrivateRoute>
-      </Switch>
+      </AnimatedSwitch>
     </Router>
   );
 }
