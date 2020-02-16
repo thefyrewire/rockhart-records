@@ -26,7 +26,7 @@ const RecordsList = ({ record: { records }}) => {
           {records.sort((a, b) => a.name > b.name).map((record, i) => (
             <List.Item key={record.id} style={{ display: 'flex', backgroundColor: (i % 2 === 0) ? '#fff' : '#f5f5f5' }}>
               <div style={{ display: 'flex', width: '100%', alignItems: 'center', paddingLeft: '1em' }}>
-                <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" avatar />
+                <Image src={record.album_art} avatar />
                 <List.Content verticalAlign="middle" style={{ paddingLeft: '1em' }}>
                   <List.Header>{record.name}</List.Header>
                   <List.Description as="a">{record.artist}</List.Description>

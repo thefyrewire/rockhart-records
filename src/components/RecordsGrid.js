@@ -124,14 +124,14 @@ const Records = ({ records, loading, createRequest }) => {
                         <Placeholder.Image square />
                       </Placeholder>
                     ) : null}
-                    <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" wrapped ui={false} style={{ display: state.removedPlaceholders.indexOf(record.id) === -1 ? 'none' : 'block' }} onLoad={() => handleRemovePlaceholder(record.id)}></Image>
+                    <Image src={record.album_art} wrapped ui={false} style={{ display: state.removedPlaceholders.indexOf(record.id) === -1 ? 'none' : 'block' }} onLoad={() => handleRemovePlaceholder(record.id)}></Image>
                     <Card.Content>
                       <Card.Header>{record.name}</Card.Header>
                       <Card.Description>{record.artist}</Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                      {record.spotify_url ? (<SpotifyButton floated="left" href="https://google.com" target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
-                      {record.purchase_url ? (<PurchaseButton floated="left" href="https://google.com" target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
+                      {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
+                      {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
                       <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)}>Request</RequestButton>
                     </Card.Content>
                   </Card>

@@ -64,7 +64,7 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
                       <List>
                         <List.Item>
                           <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
-                            <Image src="https://rockhartclothing.com/content/records/Revelation.jpg" avatar />
+                            <Image src={record.album_art} avatar />
                             <List.Content style={{ paddingLeft: '0.5em' }}>
                               <List.Header>{record.name}</List.Header>
                               <List.Description>{record.artist}</List.Description>
