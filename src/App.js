@@ -76,7 +76,7 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       socket.on('clear-current-request', (request) => clearCurrentRequest(request));
       socket.on('update-settings', (settings) => setChangeSetting(settings));
     })();
-  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings]);
+  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting]);
 
   return (
     <Router>
