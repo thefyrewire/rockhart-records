@@ -8,6 +8,7 @@ import { Grid } from 'semantic-ui-react';
 
 import AddRecordForm from '../components/AddRecordForm';
 import RecordsList from '../components/RecordsList';
+import RequestSettings from '../components/RequestSettings';
 
 const Dashboard = () => {
   return (
@@ -15,10 +16,13 @@ const Dashboard = () => {
       <h1>Dashboard</h1>
       <Grid celled="internally">
         <Grid.Row columns={2}>
-          <Grid.Column mobile={16} computer={8}>
+          <Grid.Column tablet={16} computer={8} largeScreen={4}>
+            <RequestSettings />
+          </Grid.Column>
+          <Grid.Column tablet={16} computer={8} largeScreen={4} style={{ boxShadow: 'none' }}>
             <AddRecordForm />
           </Grid.Column>
-          <Grid.Column mobile={16} computer={8} style={{ boxShadow: 'none' }}>
+          <Grid.Column computer={16} largeScreen={8} style={{ boxShadow: 'none' }}>
             <RecordsList />
           </Grid.Column>
         </Grid.Row>
