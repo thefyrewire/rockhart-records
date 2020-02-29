@@ -31,7 +31,7 @@ const PurchaseButton = Styled(Button)({
   }
 });
 
-const Records = ({ records, loading, createRequest }) => {
+const Records = ({ records, loading, createRequest, settings }) => {
   const renderable = 4;
   const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [], removedPlaceholders: [] };
 
@@ -132,7 +132,7 @@ const Records = ({ records, loading, createRequest }) => {
                     <Card.Content extra>
                       {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
                       {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
-                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)}>Request</RequestButton>
+                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)} disabled={!settings.requests_enabled}>Request</RequestButton>
                     </Card.Content>
                   </Card>
                 </Grid.Column>
@@ -152,9 +152,10 @@ const Records = ({ records, loading, createRequest }) => {
   )
 }
 
-const mapStateToProps = ({ records: { records, loading } }) => ({
+const mapStateToProps = ({ records: { records, loading }, settings }) => ({
   records,
-  loading
+  loading,
+  settings
 });
 
 export default connect(mapStateToProps, { createRequest })(Records);
