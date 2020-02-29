@@ -14,7 +14,7 @@ import io from 'socket.io-client';
 
 import { getRecords, loadingRecords, loadedRecords } from './store/actions/records';
 import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest, clearCurrentRequest } from './store/actions/requests';
-import { getSettings } from './store/actions/settings';
+import { getSettings, setChangeSetting } from './store/actions/settings';
 
 const mapStateToProps = ({ auth }) => {
   return {
@@ -52,7 +52,7 @@ const pageTransitions = {
   }
 }
 
-const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting }) => {
 
   useEffect(() => {
     (async () => {
@@ -74,6 +74,7 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       socket.on('delete-request', (id) => deleteRequest(id));
       socket.on('next-request', ({ request }) => nextRequest(request));
       socket.on('clear-current-request', (request) => clearCurrentRequest(request));
+      socket.on('update-settings', (settings) => setChangeSetting(settings));
     })();
   }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings]);
 
@@ -120,4 +121,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting })(App);

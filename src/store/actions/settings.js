@@ -1,5 +1,5 @@
 import ky from 'ky';
-import { LOADED_SETTINGS, CHANGE_SETTING } from "../types/settings";
+import { LOADED_SETTINGS, SEND_CHANGE_SETTING, CHANGE_SETTING } from "../types/settings";
 
 export const setLoadedSettings = (settings) => {
   return {
@@ -32,8 +32,8 @@ export const getSettings = () => (dispatch) => {
 export const changeSetting = (setting) => (dispatch) => {
   return new Promise(async (res, rej) => {
     try {
-      const response = await ky.put('/api/settings', { json: { setting } }).json();
-      dispatch(setChangeSetting(response));
+      dispatch({ type: 'SEND_CHANGE_SETTING' });
+      await ky.put('/api/settings', { json: { setting } });
       res();
 
     } catch (error) {
