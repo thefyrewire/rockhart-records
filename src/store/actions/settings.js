@@ -1,5 +1,5 @@
 import ky from 'ky';
-import { LOADED_SETTINGS, SEND_CHANGE_SETTING, CHANGE_SETTING } from "../types/settings";
+import { LOADED_SETTINGS, SEND_CHANGE_SETTING, CHANGE_SETTING } from '../types/settings';
 
 export const setLoadedSettings = (settings) => {
   return {
