@@ -32,7 +32,11 @@ export const getSettings = () => (dispatch) => {
 export const changeSetting = (setting) => (dispatch) => {
   return new Promise(async (res, rej) => {
     try {
+<<<<<<< HEAD
       dispatch({ type: SEND_CHANGE_SETTING });
+=======
+      dispatch({ type: 'SEND_CHANGE_SETTING' });
+>>>>>>> 1cdcfd4a6bf63894888fb21fd4f718eed0453d71
       await ky.put('/api/settings', { json: { setting } });
       res();
 
