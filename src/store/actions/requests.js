@@ -62,7 +62,7 @@ export const getRequests = () => (dispatch) => {
       console.log(error.message);
       rej();
     }
-  })
+  });
 }
 
 export const createRequest = (id) => (dispatch) => {
