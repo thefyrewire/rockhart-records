@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { Grid, Pagination, Card, Image, Segment, Button, Responsive, Input, Icon, Loader, Placeholder } from 'semantic-ui-react';
+import { SemanticToastContainer, toast } from 'react-semantic-toasts';
 import { connect } from 'react-redux';
 import Styled from 'styled-components';
 
@@ -100,6 +101,32 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
 
   const handleClickRequest = async (id) => {
     await createRequest(id);
+    const record = records.find(record => record.id === id);
+    toast({
+      type: 'success',
+      title: 'Request made!',
+      description: `Requested ${record.name}.`,
+      time: 5e3
+    });
+
+    if (settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length + 1 >= settings.max_user_requests) {
+      toast({
+        type: 'warning',
+        title: 'Limit reached',
+        description: 'Maximum number of requests have been made.',
+        time: 0
+      });
+      return;
+      
+    } else if (settings.max_total_requests !== 0 && requests.length + 1 >= settings.max_total_requests) {
+      toast({
+        type: 'warning',
+        title: 'Global limit reached',
+        description: 'Maximum global number of requests have been made.',
+        time: 0
+      });
+      return;
+    }
   }
 
   const handleRemovePlaceholder = (id) => {
@@ -108,6 +135,9 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
 
   return (
     <div>
+      <div style={{ display: 'flex', width: 'calc(100% - 40px)', justifyContent: 'center', position: 'absolute', zIndex: 99 }}>
+        <SemanticToastContainer className="toast" animation="fade down" position="top-center" />
+      </div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexDirection: window.innerWidth <= 550 ? 'column' : 'row' }}>
         <h1>Records Catalog</h1>
         <Input icon="search" iconPosition="left" placeholder="Search..." onChange={(event, data) => handleSearch(data)}></Input>
