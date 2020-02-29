@@ -31,7 +31,7 @@ const PurchaseButton = Styled(Button)({
   }
 });
 
-const Records = ({ records, loading, createRequest, settings }) => {
+const Records = ({ user, records, loading, createRequest, settings, requests }) => {
   const renderable = 4;
   const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [], removedPlaceholders: [] };
 
@@ -132,7 +132,14 @@ const Records = ({ records, loading, createRequest, settings }) => {
                     <Card.Content extra>
                       {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
                       {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
-                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)} disabled={!settings.requests_enabled}>Request</RequestButton>
+                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)}
+                        disabled={
+                          !settings.requests_enabled
+                          || (!settings.allow_duplicates && requests.findIndex(request => request.record.id === record.id) !== -1)
+                          || (settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length >= settings.max_user_requests)
+                          || (settings.max_total_requests !== 0 && requests.length >= settings.max_total_requests)
+                        }
+                      >Request</RequestButton>
                     </Card.Content>
                   </Card>
                 </Grid.Column>
@@ -152,10 +159,12 @@ const Records = ({ records, loading, createRequest, settings }) => {
   )
 }
 
-const mapStateToProps = ({ records: { records, loading }, settings }) => ({
+const mapStateToProps = ({ auth: { user }, records: { records, loading }, settings, requests: { requests } }) => ({
+  user,
   records,
   loading,
-  settings
+  settings,
+  requests
 });
 
 export default connect(mapStateToProps, { createRequest })(Records);
