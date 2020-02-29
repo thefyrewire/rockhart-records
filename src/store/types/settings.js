@@ -1,0 +1,2 @@
+export const LOADED_SETTINGS = 'LOADED_SETTINGS';
+export const CHANGE_SETTING = 'CHANGE_SETTING';
