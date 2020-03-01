@@ -161,7 +161,7 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
                     </Card.Content>
                     <Card.Content extra>
                       {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
-                      {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shop" size="large" style={{ position: 'relative', left: -2 }} />} />) : ''}
+                      {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shopping basket" size="large" style={{ position: 'relative', left: -1 }} />} />) : ''}
                       <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)}
                         disabled={
                           !settings.requests_enabled
