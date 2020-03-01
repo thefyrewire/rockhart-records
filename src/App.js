@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Requests from './pages/Requests';
 import Dashboard from './pages/Dashboard';
 
-import { Button, Container, Menu } from 'semantic-ui-react';
+import { Button, Container, Menu, Segment, Grid, List } from 'semantic-ui-react';
 
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
@@ -105,12 +105,27 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
         // transform: `translateX(${styles.offset}%) scale(${styles.scale})`,
         transform: `translateX(${styles.offset}%)`,
         position: styles.transitionIndex <= 1 ? 'relative' : 'absolute',
-        opacity: styles.opacity
+        opacity: styles.opacity,
+        minHeight: 'calc(100vh - 262px)'
       })}>
         <Route exact path="/" render={() => <Home/>}></Route>
         <Route exact path="/requests" render={() => <Requests/>}></Route>
         <PrivateRoute exact path="/dashboard" component={Dashboard} user={user}></PrivateRoute>
       </AnimatedSwitch>
+      <Segment style={{ backgroundColor: 'rgba(0,0,0,.87)', borderRadius: 0, border: 'none', margin: 0, padding: '50px 150px' }}>
+        <Grid divided>
+          <Grid.Row>
+            <Grid.Column mobile={16}>
+              <List link inverted>
+                <List.Item header as={'h4'} style={{ color: '#fff' }}>Rockhart</List.Item>
+                <List.Item>Twitch</List.Item>
+                <List.Item>Twitter</List.Item>
+                <List.Item>Discord</List.Item>
+              </List>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Segment>
     </Router>
   );
 }
