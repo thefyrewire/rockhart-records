@@ -97,7 +97,7 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
 
           {/* Conditionally render the login/logout buttons depending on login status */}
           <Menu.Item position='right'>
-            { authenticated ? <ButtonDark href="http://localhost:5000/auth/logout">Logout</ButtonDark> : <ButtonDark href="http://localhost:5000/auth/login">Login</ButtonDark> }
+            { authenticated ? <ButtonDark href="http://localhost:5000/auth/logout">Logout</ButtonDark> : <ButtonDark href="http://localhost:5000/auth/login">Login with Twitch</ButtonDark> }
           </Menu.Item>
         </Container>
       </Menu>
