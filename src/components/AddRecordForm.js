@@ -5,7 +5,9 @@ import { Form, Segment, Responsive } from 'semantic-ui-react';
 import { createRecord } from '../store/actions/records';
 import TimeAgo from './TimeAgo';
 
-const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit, handleEditDelete }) => {
+import { uploadImage } from '../store/actions/upload';
+
+const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, recordToEdit, handleEditDelete, uploadImage }) => {
   const initialState = {
     name: { value: '', error: false },
     artist: { value: '', error: false },
@@ -44,6 +46,27 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
       dispatch({ type: 'SET', record: recordToEdit });
     }
   }, [isEditing, recordToEdit]);
+
+  const [uploading, setUploading] = useState(false);
+
+  const browser = document.createElement('input');
+  browser.setAttribute('type', 'file');
+  browser.setAttribute('accept', 'image/*');
+  browser.addEventListener('change', async (event) => {
+    if (uploading) return;
+
+    const files = event.target.files;
+    if (files.length <= 0) return;
+
+    const formData = new FormData();
+    formData.append('file', files[0]);
+
+    setUploading(true);
+    const response = await uploadImage(formData);
+    setUploading(false);
+
+    dispatch({ type: 'VALUE', field: 'album_art', value: response.path });
+  });
 
   const handleChange = (event, data) => {
     const { name, value } = data;
@@ -127,7 +150,8 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
 
   const handleBrowse = (event) => {
     event.preventDefault();
-    console.log('click!');
+    if (uploading) return;
+    browser.click();
   }
 
   const handleDelete = (event) => {
@@ -146,11 +170,11 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
       <h2>{!isEditing ? 'Add new' : 'Editing'} record</h2>
         <Segment style={{ marginBottom: '1em' }}>
           <Form>
-            <Form.Input label="Name" name="name" placeholder="Record name" required onChange={handleChange} value={name.value} error={name.error} />
-            <Form.Input label="Artist" name="artist" placeholder="Record artist(s)" required onChange={handleChange} value={artist.value} error={artist.error} />
-            <Responsive as={Form.Input} fluid onUpdate={handleResizeUpdate} fireOnMount label="Album Art" name="album_art" placeholder="URL or Browse..." required onChange={handleChange} value={album_art.value} error={album_art.error} action={{ icon: 'folder open', content: browseIconContent.length > 0 ? browseIconContent : null, onClick: (event) => handleBrowse(event) }} />
-            <Form.Input label="Spotify URL" name="spotify_url" placeholder="Link to Spotify" onChange={handleChange} value={spotify_url.value} error={spotify_url.error} />
-            <Form.Input label="Purchase URL" name="purchase_url" placeholder="Link to store" onChange={handleChange} value={purchase_url.value} error={purchase_url.error} />
+            <Form.Input label="Name" name="name" placeholder="Record name" required onChange={handleChange} value={name.value} error={name.error} icon="music" iconPosition="left" />
+            <Form.Input label="Artist" name="artist" placeholder="Record artist(s)" required onChange={handleChange} value={artist.value} error={artist.error} icon="group" iconPosition="left" />
+            <Responsive as={Form.Input} fluid onUpdate={handleResizeUpdate} fireOnMount label="Album Art" name="album_art" placeholder="URL or Browse..." required onChange={handleChange} value={album_art.value} error={album_art.error} action={{ icon: 'folder open', content: browseIconContent.length > 0 ? browseIconContent : null, onClick: (event) => handleBrowse(event) }} icon="image" iconPosition="left" loading={uploading} />
+            <Form.Input label="Spotify URL" name="spotify_url" placeholder="Link to Spotify" onChange={handleChange} value={spotify_url.value} error={spotify_url.error} icon="spotify" iconPosition="left" />
+            <Form.Input label="Purchase URL" name="purchase_url" placeholder="Link to store" onChange={handleChange} value={purchase_url.value} error={purchase_url.error} icon="shopping basket" iconPosition="left" />
             <div style={{ display: 'flex'}}>
               {isEditing ? (
                 <div style={{ display: 'flex', justifyContent: 'flex-start', paddingRight: '1em' }}>
@@ -178,4 +202,4 @@ const mapStateToProps = (state) => ({
   ...state
 });
 
-export default connect(mapStateToProps, { createRecord })(AddRecordForm);
+export default connect(mapStateToProps, { createRecord, uploadImage })(AddRecordForm);
