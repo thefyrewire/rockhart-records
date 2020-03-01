@@ -188,7 +188,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
                 </div>
               ) : ''}
               <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
-                <Form.Button onClick={ (event) => handleSubmit(event) }>{!isEditing ? 'Submit' : 'Save'}</Form.Button>
+                <Form.Button onClick={ (event) => handleSubmit(event) } disabled={uploading}>{!isEditing ? 'Submit' : 'Save'}</Form.Button>
               </div>
             </div>
           </Form>
