@@ -40,7 +40,7 @@ const RequestSettings = ({ settings, changeSetting }) => {
         dispatch({ type: 'CHANGE', setting: { allow_duplicates } });
         await changeSetting({ allow_duplicates });
         break;
-      case 'Max requests per user':
+      case 'Max user requests':
         if (settings.max_user_requests === state.max_user_requests) return;
         await changeSetting({ max_user_requests: state.max_user_requests });
         break;
@@ -58,7 +58,7 @@ const RequestSettings = ({ settings, changeSetting }) => {
     else if (!Number.isInteger(parseInt(data.value))) return;
 
     switch (data.label) {
-      case 'Max requests per user':
+      case 'Max user requests':
         const max_user_requests = Math.abs(parseInt(data.value));
         dispatch({ type: 'CHANGE', setting: { max_user_requests } });
         break;
@@ -85,7 +85,7 @@ const RequestSettings = ({ settings, changeSetting }) => {
               </Grid.Column>
             </Grid.Row>
             <Grid.Row style={{ padding: 20 }}>
-              <Input fluid type="number" label="Max requests per user" value={state.max_user_requests} style={{ width: '100%' }} onChange={handleChangeInput} onBlur={() => handleChangeSetting(null, { label: 'Max requests per user' })} />
+              <Input fluid type="number" label="Max user requests" value={state.max_user_requests} style={{ width: '100%' }} onChange={handleChangeInput} onBlur={() => handleChangeSetting(null, { label: 'Max user requests' })} />
             </Grid.Row>
             <Grid.Row style={{ padding: 20 }}>
               <Input fluid type="number" label="Max total requests" value={state.max_total_requests} style={{ width: '100%' }} onChange={handleChangeInput} onBlur={() => handleChangeSetting(null, { label: 'Max total requests' })} />
