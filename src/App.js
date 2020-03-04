@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Requests from './pages/Requests';
 import Dashboard from './pages/Dashboard';
 
-import { Button, Container, Menu, Segment, Grid, List } from 'semantic-ui-react';
+import { Button, Container, Menu, Segment, Grid, List, Image, Icon } from 'semantic-ui-react';
 
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
@@ -80,7 +80,8 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
 
   return (
     <Router>
-      <Menu style={{ backgroundColor: '#1d1d1d', borderRadius: '0' }}>
+      <Menu style={{ backgroundColor: '#1d1d1d', borderRadius: '0', display: 'flex', alignItems: 'center' }}>
+        <Image src="/rockhart.png" size="medium" style={{ maxWidth: '200px', maxHeight: '150px', minWidth: '100px', minHeight: '50px', padding: '20px', marginLeft: 20 }} />
         <Container>
           <Menu.Item>
             <Link to="/" style={{ color: '#ddd' }}>Home</Link>
@@ -117,10 +118,12 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
           <Grid.Row>
             <Grid.Column mobile={16}>
               <List link inverted>
-                <List.Item header as={'h4'} style={{ color: '#fff' }}>Rockhart</List.Item>
-                <List.Item>Twitch</List.Item>
-                <List.Item>Twitter</List.Item>
-                <List.Item>Discord</List.Item>
+                <List.Header as={'h4'} style={{ color: '#fff' }}>Rockhart</List.Header>
+                <List.Item as={'a'} href="https://twitch.tv/rockhart"><Icon name="twitch" /> Twitch</List.Item>
+                <List.Item as={'a'} href="https://twitter.tv/rockhart"><Icon name="twitter" /> Twitter</List.Item>
+                <List.Item as={'a'} href="https://www.youtube.com/channel/UCT3yO0apegJ612WofZAMzyg"><Icon name="youtube" /> YouTube</List.Item>
+                <List.Item as={'a'} href="https://discord.gg/ddm7Kpd"><Icon name="discord" /> Discord</List.Item>
+                <List.Item as={'a'} href="https://rockhartclothing.com"><Icon name="shopping basket" /> Merch</List.Item>
               </List>
             </Grid.Column>
           </Grid.Row>
