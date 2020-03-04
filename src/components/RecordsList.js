@@ -29,7 +29,7 @@ const RecordsList = ({ record: { records }}) => {
                 <Image src={record.album_art} avatar />
                 <List.Content verticalAlign="middle" style={{ paddingLeft: '1em' }}>
                   <List.Header>{record.name}</List.Header>
-                  <List.Description as="a">{record.artist}</List.Description>
+                  <List.Description>{record.artist}</List.Description>
                 </List.Content>
               </div>
               <div style={{ float: 'right', paddingRight: 10, display: 'flex', height: 50, justifyContent: 'flex-end', alignItems: 'center' }} >
