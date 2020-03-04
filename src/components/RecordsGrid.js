@@ -162,7 +162,7 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
                     <Card.Content extra>
                       {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
                       {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shopping basket" size="large" style={{ position: 'relative', left: -1 }} />} />) : ''}
-                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={() => handleClickRequest(record.id)}
+                      <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={user ? () => handleClickRequest(record.id) : null} href={!user ? 'http://localhost:5000/auth/login' : null}
                         disabled={
                           !settings.requests_enabled
                           || (!settings.allow_duplicates && requests.findIndex(request => request.record.id === record.id) !== -1)
