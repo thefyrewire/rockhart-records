@@ -109,7 +109,7 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
       time: 5e3
     });
 
-    if (settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length + 1 >= settings.max_user_requests) {
+    if (user && settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length + 1 >= settings.max_user_requests) {
       toast({
         type: 'warning',
         title: 'Limit reached',
@@ -166,7 +166,7 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
                         disabled={
                           !settings.requests_enabled
                           || (!settings.allow_duplicates && requests.findIndex(request => request.record.id === record.id) !== -1)
-                          || (settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length >= settings.max_user_requests)
+                          || (user && settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length >= settings.max_user_requests)
                           || (settings.max_total_requests !== 0 && requests.length >= settings.max_total_requests)
                         }
                       >Request</RequestButton>
