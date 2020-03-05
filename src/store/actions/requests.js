@@ -4,7 +4,8 @@ import {
   SEND_PROMOTE_REQUEST, PROMOTE_REQUEST,
   SEND_DELETE_REQUEST, DELETE_REQUEST,
   SEND_NEXT_REQUEST, NEXT_REQUEST,
-  SEND_CLEAR_CURRENT_REQUEST, CLEAR_CURRENT_REQUEST
+  SEND_CLEAR_CURRENT_REQUEST, CLEAR_CURRENT_REQUEST,
+  SEND_CLEAR_HISTORY, CLEAR_HISTORY
 } from '../types/requests';
 
 import ky from 'ky';
@@ -48,6 +49,12 @@ export const clearCurrentRequest = (request) => {
   return {
     type: CLEAR_CURRENT_REQUEST,
     request
+  }
+}
+
+export const clearHistory = () => {
+  return {
+    type: CLEAR_HISTORY
   }
 }
 
@@ -126,6 +133,20 @@ export const sendClearCurrentRequest = () => (dispatch) => {
     try {
       dispatch({ type: SEND_CLEAR_CURRENT_REQUEST });
       await ky.put('/api/requests/current/clear');
+      res();
+
+    } catch (error) {
+      console.log(error.message);
+      rej();
+    }
+  });
+}
+
+export const sendClearHistory = () => (dispatch) => {
+  return new Promise(async (res, rej) => {
+    try {
+      dispatch({ type: SEND_CLEAR_HISTORY });
+      await ky.delete('/api/requests/history');
       res();
 
     } catch (error) {

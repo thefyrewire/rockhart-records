@@ -1,4 +1,4 @@
-import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST, CLEAR_CURRENT_REQUEST } from '../types/requests';
+import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST, CLEAR_CURRENT_REQUEST, CLEAR_HISTORY } from '../types/requests';
 
 const initialState = {
   requests: [],
@@ -49,6 +49,11 @@ export default (state = initialState, action = {}) => {
         ...state,
         current: null,
         history: [...state.history, action.request].sort((a, b) => new Date(a.updated_at) < new Date(b.updated_at)).slice(0, 10)
+      }
+    case CLEAR_HISTORY:
+      return {
+        ...state,
+        history: []
       }
     default:
       return state;
