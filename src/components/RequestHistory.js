@@ -1,10 +1,15 @@
 import React from 'react';
-import { Segment, List, Image, Transition } from 'semantic-ui-react';
+import { Segment, List, Image, Transition, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import TimeAgo from './TimeAgo';
+import { sendClearHistory } from '../store/actions/requests';
 
-const RequestHistory = ({ history }) => {
+const RequestHistory = ({ history, auth: { authenticated, user }, sendClearHistory }) => {
+  const handleClickClear = async () => {
+    await sendClearHistory();
+  }
+
   return (
     <div>
       <h2>Request History</h2>
@@ -25,13 +30,15 @@ const RequestHistory = ({ history }) => {
             </List.Item>
           ))}
         </Transition.Group>
+        {authenticated && user.level === 'admin' ? (<Button fluid icon="delete" content="Clear" onClick={handleClickClear} />) : null}
       </Segment>
     </div>
   )
 }
 
 const mapStateToProps = (state) => ({
-  history: state.requests.history.sort((a, b) => new Date(a.updated_at) < new Date(b.updated_at))
+  history: state.requests.history.sort((a, b) => new Date(a.updated_at) < new Date(b.updated_at)),
+  auth: state.auth
 });
 
-export default connect(mapStateToProps)(RequestHistory);
+export default connect(mapStateToProps, { sendClearHistory })(RequestHistory);

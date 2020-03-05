@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
 import { getRecords, loadingRecords, loadedRecords } from './store/actions/records';
-import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest, clearCurrentRequest } from './store/actions/requests';
+import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest, clearCurrentRequest, clearHistory } from './store/actions/requests';
 import { getSettings, setChangeSetting } from './store/actions/settings';
 
 const mapStateToProps = ({ auth }) => {
@@ -23,11 +23,19 @@ const mapStateToProps = ({ auth }) => {
   };
 }
 
-const ButtonDark = Styled(Button)({
+const ButtonLogout = Styled(Button)({
   backgroundColor: '#3d3d3d !important',
   color: '#ddd !important',
   '&:hover': {
     backgroundColor: '#4d4d4d !important'
+  }
+});
+
+const ButtonLogin = Styled(Button)({
+  backgroundColor: '#d70000 !important',
+  color: '#fff !important',
+  '&:hover': {
+    backgroundColor: '#a50000 !important'
   }
 });
 
@@ -52,7 +60,7 @@ const pageTransitions = {
   }
 }
 
-const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory }) => {
 
   useEffect(() => {
     (async () => {
@@ -75,8 +83,9 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       socket.on('next-request', ({ request }) => nextRequest(request));
       socket.on('clear-current-request', (request) => clearCurrentRequest(request));
       socket.on('update-settings', (settings) => setChangeSetting(settings));
+      socket.on('clear-history', () => clearHistory());
     })();
-  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting]);
+  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory]);
 
   return (
     <Router>
@@ -98,7 +107,7 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
 
           {/* Conditionally render the login/logout buttons depending on login status */}
           <Menu.Item position='right'>
-            { authenticated ? <ButtonDark href="http://localhost:5000/auth/logout">Logout</ButtonDark> : <ButtonDark href="http://localhost:5000/auth/login">Login with Twitch</ButtonDark> }
+            { authenticated ? <ButtonLogout href="http://localhost:5000/auth/logout">Logout</ButtonLogout> : <ButtonLogin href="http://localhost:5000/auth/login">Login with Twitch</ButtonLogin> }
           </Menu.Item>
         </Container>
       </Menu>
@@ -139,4 +148,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory })(App);
