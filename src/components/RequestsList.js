@@ -1,9 +1,18 @@
 import React from 'react';
 import { Segment, Table, Transition, Button, List, Image } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import Styled from 'styled-components';
 
 import { sendPromoteRequest, sendDeleteRequest, sendNextRequest } from '../store/actions/requests';
 import TimeAgo from './TimeAgo';
+
+const ButtonNext = Styled(Button)({
+  backgroundColor: '#d70000 !important',
+  color: '#fff !important',
+  '&:hover': {
+    backgroundColor: '#a50000 !important'
+  }
+});
 
 const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendDeleteRequest, sendNextRequest, current }) => {
   const user_name = authenticated ? user.user_name : null; // since already using user.user_name in map requests below
@@ -41,7 +50,7 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
             <>
               {authenticated && user.level === 'admin' ? (
                 <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
-                  <Button onClick={handleClickNext}>Next</Button> 
+                  <ButtonNext onClick={handleClickNext}>Next</ButtonNext> 
                 </div>
               ) : null}
               <Table celled definition striped>
@@ -74,7 +83,7 @@ const RequestsList = ({ authenticated, user, requests, sendPromoteRequest, sendD
                         </List.Item>
                       </List>
                     </Table.Cell>
-                    <Table.Cell>{user_name ? (<b>{user.user_name}</b>) : user.user_name}</Table.Cell>
+                    <Table.Cell>{user_name === user.user_name ? (<b>{user.user_name}</b>) : user.user_name}</Table.Cell>
                     <Table.Cell><TimeAgo date={created_at} /></Table.Cell>
                       {authenticated && level === 'admin' ? (
                         <Table.Cell textAlign="center" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'space-evenly' }}>
