@@ -23,7 +23,7 @@ const RecordsList = ({ record: { records }}) => {
       <h2>Records</h2>
       <Segment>
         <List style={{ height: 416, overflowY: 'scroll', margin: '0' }}>
-          {records.sort((a, b) => a.name > b.name).map((record, i) => (
+          {records.sort((a, b) => (a.artist.toLowerCase().startsWith('the ') ? a.artist.substr(4, a.artist.length).toLowerCase() : a.artist.toLowerCase()) > (b.artist.toLowerCase().startsWith('the ') ? b.artist.substr(4, b.artist.length).toLowerCase() : b.artist.toLowerCase()) ? 1 : -1).map((record, i) => (
             <List.Item key={record.id} style={{ display: 'flex', backgroundColor: (i % 2 === 0) ? '#fff' : '#f5f5f5' }}>
               <div style={{ display: 'flex', width: '100%', alignItems: 'center', paddingLeft: '1em' }}>
                 <Image src={record.album_art} avatar />

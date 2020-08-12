@@ -47,7 +47,7 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
           ...state,
           renderableRecords: records
             .filter(record => record.name.toLowerCase().includes(state.search.toLowerCase()) || record.artist.toLowerCase().includes(state.search.toLowerCase()))
-            .sort((a, b) => a.name > b.name)
+            .sort((a, b) => (a.artist.toLowerCase().startsWith('the ') ? a.artist.substr(4, a.artist.length).toLowerCase() : a.artist.toLowerCase()) > (b.artist.toLowerCase().startsWith('the ') ? b.artist.substr(4, b.artist.length).toLowerCase() : b.artist.toLowerCase()) ? 1 : -1)
         }
       case 'UPDATE_RENDERED':
         return {
