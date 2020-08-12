@@ -33,7 +33,7 @@ const PurchaseButton = Styled(Button)({
 });
 
 const Records = ({ user, records, loading, createRequest, settings, requests }) => {
-  const renderable = 4;
+  const renderable = 24;
   const initialState = { search: '', page: 1, renderableRecords: [], renderedRecords: [], removedPlaceholders: [] };
 
   const reducer = (state, action) => {
