@@ -5,7 +5,8 @@ import {
   SEND_DELETE_REQUEST, DELETE_REQUEST,
   SEND_NEXT_REQUEST, NEXT_REQUEST,
   SEND_CLEAR_CURRENT_REQUEST, CLEAR_CURRENT_REQUEST,
-  SEND_CLEAR_HISTORY, CLEAR_HISTORY
+  SEND_CLEAR_HISTORY, CLEAR_HISTORY,
+  SEND_CLEAR_STREAM_UNSAFE_REQUESTS, CLEAR_STREAM_UNSAFE_REQUESTS
 } from '../types/requests';
 
 import ky from 'ky';
@@ -55,6 +56,12 @@ export const clearCurrentRequest = (request) => {
 export const clearHistory = () => {
   return {
     type: CLEAR_HISTORY
+  }
+}
+
+export const clearStreamUnsafeRequests = () => {
+  return {
+    type: CLEAR_STREAM_UNSAFE_REQUESTS
   }
 }
 
@@ -147,6 +154,20 @@ export const sendClearHistory = () => (dispatch) => {
     try {
       dispatch({ type: SEND_CLEAR_HISTORY });
       await ky.delete('/api/requests/history');
+      res();
+
+    } catch (error) {
+      console.log(error.message);
+      rej();
+    }
+  });
+}
+
+export const sendClearStreamUnsafeRequests = () => (dispatch) => {
+  return new Promise(async (res, rej) => {
+    try {
+      dispatch({ type: SEND_CLEAR_STREAM_UNSAFE_REQUESTS });
+      await ky.post('/api/requests/unsafe');
       res();
 
     } catch (error) {

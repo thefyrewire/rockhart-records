@@ -146,7 +146,7 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
         <Responsive as={Grid} columns={columns} onUpdate={handleResizeUpdate} fireOnMount celled="internally">
           <Grid.Row stretched>
             {state.renderableRecords.length > 0 ? (
-              state.renderedRecords.map(record => (
+              state.renderedRecords.filter(record => !settings.stream_safe_only || (settings.stream_safe_only && record.stream_safe)).map(record => (
                 <Grid.Column key={record.id} style={{ boxShadow: 'none' }}>
                   <Card centered>
                     {state.removedPlaceholders.indexOf(record.id) === -1 ? (
@@ -160,12 +160,13 @@ const Records = ({ user, records, loading, createRequest, settings, requests }) 
                       <Card.Description>{record.artist}</Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                      {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} />) : ''}
-                      {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shopping basket" size="large" style={{ position: 'relative', left: -1 }} />} />) : ''}
+                      {record.spotify_url ? (<SpotifyButton floated="left" href={record.spotify_url} target="_blank" size="small" circular icon={<Icon name="spotify" size="large" />} title="Listen on Spotify" />) : ''}
+                      {record.purchase_url ? (<PurchaseButton floated="left" href={record.purchase_url} target="_blank" size="small" circular icon={<Icon name="shopping basket" size="large" style={{ position: 'relative', left: -1 }} />} title="Purchase track" />) : ''}
                       <RequestButton floated="right" style={{ backgroundColor: '#d70000', color: '#fff' }} size="small" onClick={user ? () => handleClickRequest(record.id) : null} href={!user ? 'http://localhost:5000/auth/login' : null}
                         disabled={
                           !settings.requests_enabled
                           || (!settings.allow_duplicates && requests.findIndex(request => request.record.id === record.id) !== -1)
+                          || (settings.stream_safe_only && !record.stream_safe)
                           || (user && settings.max_user_requests !== 0 && requests.filter(request => request.user.id === user.id).length >= settings.max_user_requests)
                           || (settings.max_total_requests !== 0 && requests.length >= settings.max_total_requests)
                         }

@@ -1,4 +1,4 @@
-import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST, CLEAR_CURRENT_REQUEST, CLEAR_HISTORY } from '../types/requests';
+import { SET_REQUESTS, ADD_REQUEST, PROMOTE_REQUEST, DELETE_REQUEST, NEXT_REQUEST, CLEAR_CURRENT_REQUEST, CLEAR_HISTORY, CLEAR_STREAM_UNSAFE_REQUESTS } from '../types/requests';
 
 const initialState = {
   requests: [],
@@ -54,6 +54,11 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         history: []
+      }
+    case CLEAR_STREAM_UNSAFE_REQUESTS:
+      return {
+        ...state,
+        requests: state.requests.filter(request => request.record.stream_safe)
       }
     default:
       return state;

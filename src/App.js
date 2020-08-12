@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
 import { getRecords, loadingRecords, loadedRecords } from './store/actions/records';
-import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest, clearCurrentRequest, clearHistory } from './store/actions/requests';
+import { getRequests, addRequest, promoteRequest, deleteRequest, nextRequest, clearCurrentRequest, clearHistory, sendClearStreamUnsafeRequests, clearStreamUnsafeRequests } from './store/actions/requests';
 import { getSettings, setChangeSetting } from './store/actions/settings';
 
 const mapStateToProps = ({ auth }) => {
@@ -60,7 +60,7 @@ const pageTransitions = {
   }
 }
 
-const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory }) => {
+const App = ({ authenticated, user, getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory, sendClearStreamUnsafeRequests, clearStreamUnsafeRequests }) => {
 
   useEffect(() => {
     (async () => {
@@ -82,10 +82,14 @@ const App = ({ authenticated, user, getRecords, getRequests, addRequest, promote
       socket.on('delete-request', (id) => deleteRequest(id));
       socket.on('next-request', ({ request }) => nextRequest(request));
       socket.on('clear-current-request', (request) => clearCurrentRequest(request));
-      socket.on('update-settings', (settings) => setChangeSetting(settings));
+      socket.on('update-settings', (settings) => {
+        setChangeSetting(settings);
+        if (settings.stream_safe_only) sendClearStreamUnsafeRequests();
+      });
       socket.on('clear-history', () => clearHistory());
+      socket.on('clear-unsafe', () => clearStreamUnsafeRequests());
     })();
-  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory]);
+  }, [getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory, sendClearStreamUnsafeRequests, clearStreamUnsafeRequests]);
 
   return (
     <Router>
@@ -148,4 +152,4 @@ const PrivateRoute = ({ component: Component, user, ...props }) => (
   )} />
 )
 
-export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory })(App);
+export default connect(mapStateToProps, { getRecords, getRequests, addRequest, promoteRequest, deleteRequest, loadingRecords, loadedRecords, nextRequest, clearCurrentRequest, getSettings, setChangeSetting, clearHistory, sendClearStreamUnsafeRequests, clearStreamUnsafeRequests })(App);

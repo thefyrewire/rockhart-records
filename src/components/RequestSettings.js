@@ -8,6 +8,7 @@ const RequestSettings = ({ settings, changeSetting }) => {
   const initialState = {
     requests_enabled: false,
     allow_duplicates: false,
+    stream_safe_only: false,
     max_user_requests: 5,
     max_total_requests: 50
   }
@@ -39,6 +40,11 @@ const RequestSettings = ({ settings, changeSetting }) => {
         const allow_duplicates = data.checked;
         dispatch({ type: 'CHANGE', setting: { allow_duplicates } });
         await changeSetting({ allow_duplicates });
+        break;
+      case 'Stream safe only':
+        const stream_safe_only = data.checked;
+        dispatch({ type: 'CHANGE', setting: { stream_safe_only } });
+        await changeSetting({ stream_safe_only });
         break;
       case 'Max user requests':
         if (settings.max_user_requests === state.max_user_requests) return;
@@ -81,7 +87,10 @@ const RequestSettings = ({ settings, changeSetting }) => {
                 <Radio toggle label="Enable requests" checked={state.requests_enabled} onChange={handleChangeSetting} />
               </Grid.Column>
               <Grid.Column mobile={16} tablet={8} style={{ padding: 20 }}>
-              <Radio toggle label="Allow duplicates" checked={state.allow_duplicates} onChange={handleChangeSetting} />
+                <Radio toggle label="Allow duplicates" checked={state.allow_duplicates} onChange={handleChangeSetting} />
+              </Grid.Column>
+              <Grid.Column mobile={16} tablet={8} style={{ padding: 20 }}>
+                <Radio toggle label="Stream safe only" checked={state.stream_safe_only} onChange={handleChangeSetting} />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row style={{ padding: 20 }}>
@@ -98,6 +107,6 @@ const RequestSettings = ({ settings, changeSetting }) => {
 
 const mapStateToProps = (state) => ({
   settings: state.settings
-})
+});
 
 export default connect(mapStateToProps, { changeSetting })(RequestSettings);

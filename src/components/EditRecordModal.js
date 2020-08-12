@@ -46,7 +46,7 @@ const EditRecordModal = ({ record: { records }, modalOpen, recordID, editRecord,
       `}</style>
       <TransitionablePortal open={modalOpen} transition={{ animation: 'fade down', duration: 500 }} onOpen={transitionModalIn}>
         <Modal open={true} size="tiny" onClose={transitionModalOut}>
-          <Modal.Content scrolling>
+          <Modal.Content scrolling={false}>
             <AddRecordForm isEditing={true} recordToEdit={recordToEdit} handleEditSave={handleEditSave} handleEditDelete={handleEditDelete} />
           </Modal.Content>
         </Modal>

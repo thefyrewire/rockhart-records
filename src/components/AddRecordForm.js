@@ -14,6 +14,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
     album_art: { value: '', error: false },
     spotify_url: { value: '', error: false },
     purchase_url: { value: '', error: false },
+    stream_safe: { value: false, error: false },
   }
 
   const reducer = (state, action) => {
@@ -21,10 +22,15 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
       case 'RESET':
         return initialState;
       case 'SET':
-        return Object.fromEntries(Object.keys(action.record).map(key => [key, { value: action.record[key] || '', error: false }]));
+        return Object.fromEntries(Object.keys(action.record).map(key => [key, key === 'stream_safe' ? { checked: action.record[key] } : { value: action.record[key] || '', error: false }]));
       case 'VALUE': {
         const newState = { ...state };
         newState[action.field] = Object.assign(newState[action.field], { value: action.value, error: false });
+        return newState;
+      }
+      case 'CHECKED': {
+        const newState = { ...state };
+        newState[action.field] = Object.assign(newState[action.field], { checked: action.checked });
         return newState;
       }
       case 'ERROR': {
@@ -38,7 +44,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
   }
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { name, artist, album_art, spotify_url, purchase_url } = state;
+  const { name, artist, album_art, spotify_url, purchase_url, stream_safe } = state;
   const [browseIconContent, setBrowseIconContent] = useState('Browse...');
 
   useEffect(() => {
@@ -69,8 +75,18 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
   });
 
   const handleChange = (event, data) => {
-    const { name, value } = data;
-    dispatch({ type: 'VALUE', field: name, value });
+    switch (data.type) {
+      case 'radio': {
+        const { name, checked } = data;
+        dispatch({ type: 'CHECKED', field: name, checked });
+        break;
+      }
+      default: {
+        const { name, value } = data;
+        dispatch({ type: 'VALUE', field: name, value });
+      }
+    }
+
   }
 
   const handleSubmit = async (event) => {
@@ -88,8 +104,11 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
       artist: artist.value,
       album_art: album_art.value,
       spotify_url: spotify_url.value.length > 0 ? spotify_url.value : null,
-      purchase_url: purchase_url.value.length > 0 ? purchase_url.value : null
+      purchase_url: purchase_url.value.length > 0 ? purchase_url.value : null,
+      stream_safe: stream_safe.checked
     };
+
+    console.log(record);
     
     try {
       if (!isEditing) {
@@ -136,6 +155,8 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
       valid = false;
     }
 
+    console.log(stream_safe.checked);
+
     return valid;
   }
 
@@ -175,6 +196,7 @@ const AddRecordForm = ({ createRecord, isEditing = false, handleEditSave, record
             <Responsive as={Form.Input} fluid onUpdate={handleResizeUpdate} fireOnMount label="Album Art" name="album_art" placeholder="URL or Browse..." required onChange={handleChange} value={album_art.value} error={album_art.error} action={{ icon: 'folder open', content: browseIconContent.length > 0 ? browseIconContent : null, onClick: (event) => handleBrowse(event) }} icon="image" iconPosition="left" loading={uploading} />
             <Form.Input label="Spotify URL" name="spotify_url" placeholder="Link to Spotify" onChange={handleChange} value={spotify_url.value} error={spotify_url.error} icon="spotify" iconPosition="left" />
             <Form.Input label="Purchase URL" name="purchase_url" placeholder="Link to store" onChange={handleChange} value={purchase_url.value} error={purchase_url.error} icon="shopping basket" iconPosition="left" />
+            <Form.Radio toggle label="Stream Safe" name="stream_safe" onChange={handleChange} checked={stream_safe.checked} />
             <div style={{ display: 'flex'}}>
               {isEditing ? (
                 <div style={{ display: 'flex', justifyContent: 'flex-start', paddingRight: '1em' }}>
